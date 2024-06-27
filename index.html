@@ -14,5 +14,17 @@
   <div class="cf-turnstile" data-sitekey="0x4AAAAAAAdcuiWK4jIId64g"></div>
   <input type="submit">
     </form>
+    <script>
+    window.turnstileCallbackFunction = function () {
+        const turnstileOptions = {
+            sitekey: 'yourSitekey',
+            callback: function(token) {
+                console.log(`Challenge Success: ${token}`);
+            }
+        };
+        turnstile.render('#container', turnstileOptions);
+    };
+</script>
+<div id="container"></div>
 </body>
 </html>
