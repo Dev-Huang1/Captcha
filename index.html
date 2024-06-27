@@ -14,20 +14,5 @@
   <div class="cf-turnstile" data-sitekey="0x4AAAAAAAdcuiWK4jIId64g"></div>
   <input type="submit">
     </form>
-    <script>
-    async function handleRequest() {
-    // ... Receive token
-    let formData = new FormData();
-    formData.append('secret', turnstileISecretKey);
-    formData.append('response', receivedToken);
- 
-    await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify',
-        {
-            body: formData,
-            method: 'POST'
-        });
-    // ...
-    }
-</script>
 </body>
 </html>
