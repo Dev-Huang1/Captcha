@@ -7,10 +7,26 @@
     <!-- 引入Turnstile小部件脚本 -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <style>
+        /* 基础样式 */
+        body {
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* 亮色模式 */
+        body.light-mode {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        /* 暗色模式 */
+        body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
         /* 美化按钮 */
         #submit-button {
-            background-color: #4CAF50; /* 绿色背景 */
-            color: white; /* 白色文字 */
             padding: 15px 32px; /* 内边距 */
             text-align: center; /* 居中对齐 */
             text-decoration: none; /* 无下划线 */
@@ -20,10 +36,28 @@
             cursor: pointer; /* 鼠标指针 */
             border: none; /* 无边框 */
             border-radius: 4px; /* 圆角 */
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        #submit-button:disabled {
+        /* 亮色模式按钮 */
+        body.light-mode #submit-button {
+            background-color: #4CAF50; /* 绿色背景 */
+            color: white; /* 白色文字 */
+        }
+
+        body.light-mode #submit-button:disabled {
             background-color: #cccccc; /* 灰色背景 */
+            cursor: not-allowed; /* 不可点击 */
+        }
+
+        /* 暗色模式按钮 */
+        body.dark-mode #submit-button {
+            background-color: #3e8e41; /* 深绿色背景 */
+            color: white; /* 白色文字 */
+        }
+
+        body.dark-mode #submit-button:disabled {
+            background-color: #555555; /* 深灰色背景 */
             cursor: not-allowed; /* 不可点击 */
         }
     </style>
@@ -49,6 +83,24 @@
                 event.preventDefault();
             }
         });
+
+        // 检测系统主题模式
+        function detectColorScheme() {
+            const darkSchemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            if (darkSchemeMediaQuery.matches) {
+                document.body.classList.add('dark-mode');
+                document.body.classList.remove('light-mode');
+            } else {
+                document.body.classList.add('light-mode');
+                document.body.classList.remove('dark-mode');
+            }
+        }
+
+        // 监听主题模式变化
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', detectColorScheme);
+
+        // 初始化检测主题模式
+        detectColorScheme();
     </script>
 </body>
 </html>
