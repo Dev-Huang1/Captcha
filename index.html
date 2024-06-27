@@ -4,18 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Turnstile Example</title>
-    <!-- Include the Turnstile widget script -->
+    <!-- 引入Turnstile小部件脚本 -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <style>
+        /* 美化按钮 */
+        #submit-button {
+            background-color: #4CAF50; /* 绿色背景 */
+            color: white; /* 白色文字 */
+            padding: 15px 32px; /* 内边距 */
+            text-align: center; /* 居中对齐 */
+            text-decoration: none; /* 无下划线 */
+            display: inline-block; /* 内联块 */
+            font-size: 16px; /* 文字大小 */
+            margin: 4px 2px; /* 外边距 */
+            cursor: pointer; /* 鼠标指针 */
+            border: none; /* 无边框 */
+            border-radius: 4px; /* 圆角 */
+        }
+
+        #submit-button:disabled {
+            background-color: #cccccc; /* 灰色背景 */
+            cursor: not-allowed; /* 不可点击 */
+        }
+    </style>
 </head>
 <body>
-    <!-- Your website content goes here -->
+    <!-- 网站内容 -->
     <h2>CloudFlare Turnstile Demo</h2>
     <form action="/login" method="POST" id="turnstile-form">
         <div class="cf-turnstile" 
              data-sitekey="0x4AAAAAAAdcuiWK4jIId64g" 
              data-callback="enableSubmitButton">
         </div>
-        <input type="submit" id="submit-button" disabled>
+        <input type="submit" id="submit-button" value="确认" disabled>
     </form>
 
     <script>
