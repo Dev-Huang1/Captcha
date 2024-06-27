@@ -15,16 +15,19 @@
   <input type="submit">
     </form>
     <script>
-    window.turnstileCallbackFunction = function () {
-        const turnstileOptions = {
-            sitekey: '0x4AAAAAAAdcuiWK4jIId64g',
-            callback: function(token) {
-                console.log(`Challenge Success: ${token}`);
-            }
-        };
-        turnstile.render('#container', turnstileOptions);
-    };
+    async function handleRequest() {
+    // ... Receive token
+    let formData = new FormData();
+    formData.append('secret', turnstileISecretKey);
+    formData.append('response', receivedToken);
+ 
+    await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify',
+        {
+            body: formData,
+            method: 'POST'
+        });
+    // ...
+    }
 </script>
-<div id="container"></div>
 </body>
 </html>
