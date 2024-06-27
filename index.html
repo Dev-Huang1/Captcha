@@ -10,14 +10,24 @@
 <body>
     <!-- Your website content goes here -->
     <h2>CloudFlare Turnstile Demo</h2>
-    <form action="/login" method="POST">
-        <div class="cf-turnstile" data-sitekey="0x4AAAAAAAdcuiWK4jIId64g"></div>
-        <input type="submit" disabled> <!-- Add the "disabled" attribute to disable the button initially -->
+    <form action="/login" method="POST" id="turnstile-form">
+        <div class="cf-turnstile" 
+             data-sitekey="0x4AAAAAAAdcuiWK4jIId64g" 
+             data-callback="enableSubmitButton">
+        </div>
+        <input type="submit" id="submit-button" disabled>
     </form>
+
     <script>
-  document.querySelector('.cf-turnstile').addEventListener('challenge.success', function() {
-    document.querySelector('input[type="submit"]').disabled = false;
-  });
-</script>
+        function enableSubmitButton() {
+            document.getElementById('submit-button').disabled = false;
+        }
+
+        document.getElementById('turnstile-form').addEventListener('submit', function(event) {
+            if (document.getElementById('submit-button').disabled) {
+                event.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>
