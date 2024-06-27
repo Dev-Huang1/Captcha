@@ -15,9 +15,9 @@
         <input type="submit" disabled> <!-- Add the "disabled" attribute to disable the button initially -->
     </form>
     <script>
-            document.querySelector('.cf-turnstile').addEventListener('cf-turnstile-success', function () {
-            document.querySelector('input[type="submit"]').removeAttribute('disabled');
-        });
-    </script>
+  document.querySelector('.cf-turnstile').addEventListener('challenge.success', function() {
+    document.querySelector('input[type="submit"]').disabled = false;
+  });
+</script>
 </body>
 </html>
