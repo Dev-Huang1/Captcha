@@ -4,30 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>reCAPTCHA V3 Example</title>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LdNLTspAAAAACE60DCWv_apztfF8GEgMfynrJGW"></script>
+     <script src="https://www.google.com/recaptcha/api.js"></script>
 </head>
 <body>
-    <form action="https://test.xyehr.cn" method="POST">
-        <!-- Your form fields go here -->
-        <!-- ... -->
+    <button class="g-recaptcha" 
+        data-sitekey="6LdNLTspAAAAACE60DCWv_apztfF8GEgMfynrJGW" 
+        data-callback='onSubmit' 
+        data-action='submit'>Submit</button>
 
-        <!-- Add reCAPTCHA widget -->
-        <div id="recaptcha-container"></div>
-
-        <button type="submit">Submit</button>
-    </form>
-
-    <script>
-        // Execute reCAPTCHA when the page loads
-        grecaptcha.ready(function() {
-            grecaptcha.execute('6LdNLTspAAAAACE60DCWv_apztfF8GEgMfynrJGW', { action: 'demo_action' })
-                .then(function(token) {
-                    // Handle the token (send it to your server for verification)
-                    console.log('reCAPTCHA token:', token);
-                    // You can customize further actions based on the score received
-                    // For example, only allow form submission if score >= 0.5
-                });
-        });
-    </script>
+     <script>
+   function onSubmit(token) {
+     document.getElementById("demo-form").submit();
+   }
+     </script>
 </body>
 </html>
