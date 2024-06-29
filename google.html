@@ -19,10 +19,10 @@
       document.addEventListener('DOMContentLoaded', function () {
     const submitButton = document.getElementById('submit-button');
     submitButton.disabled = true;
-    event.preventDefault();
 
     function enableSubmitButton() {
         submitButton.disabled = false;
+        event.preventDefault();
     }
 
     window.onSubmit = enableSubmitButton;
