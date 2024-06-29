@@ -1,19 +1,31 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>reCAPTCHA demo: Simple page</title>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script src="theme.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
-  </head>
-  <body>
+</head>
+<body>
     <h2>Google reCAPTCHA Demo</h2>
-    <form action="?" method="POST">
-      <div class="g-recaptcha" data-sitekey="6Ld08AMqAAAAAK1Z_yK2Yna6-Ku1KvIHg1aOsB5S"></div>
-      <br/>
-      <input type="submit" id="submit-button" value="Submit">
+    <form action="?" method="POST" onsubmit="return false;">
+        <div class="g-recaptcha" data-sitekey="6Ld08AMqAAAAAK1Z_yK2Yna6-Ku1KvIHg1aOsB5S" data-callback="onSubmit"></div>
+        <br/>
+        <input type="submit" id="submit-button" value="Submit">
     </form>
-  </body>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+    const submitButton = document.getElementById('submit-button');
+    submitButton.disabled = true;
+
+    function enableSubmitButton() {
+        submitButton.disabled = false;
+    }
+
+    window.onSubmit = enableSubmitButton;
+});
+    </script>
+</body>
 </html>
