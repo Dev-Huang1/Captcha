@@ -6,7 +6,61 @@
     <title>reCAPTCHA demo: Simple page</title>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script src="theme.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <style>
+/* 基础样式 */
+        body {
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* 亮色模式 */
+        body.light-mode {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        /* 暗色模式 */
+        body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        /* 美化按钮 */
+        #submit-button {
+            padding: 15px 32px; /* 内边距 */
+            text-align: center; /* 居中对齐 */
+            text-decoration: none; /* 无下划线 */
+            display: inline-block; /* 内联块 */
+            font-size: 16px; /* 文字大小 */
+            margin: 4px 2px; /* 外边距 */
+            cursor: pointer; /* 鼠标指针 */
+            border: none; /* 无边框 */
+            border-radius: 4px; /* 圆角 */
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* 亮色模式按钮 */
+        body.light-mode #submit-button {
+            background-color: #4CAF50; /* 绿色背景 */
+            color: white; /* 白色文字 */
+        }
+
+        body.light-mode #submit-button:disabled {
+            background-color: #cccccc; /* 灰色背景 */
+            cursor: not-allowed; /* 不可点击 */
+        }
+
+        /* 暗色模式按钮 */
+        body.dark-mode #submit-button {
+            background-color: #3e8e41; /* 深绿色背景 */
+            color: white; /* 白色文字 */
+        }
+
+        body.dark-mode #submit-button:disabled {
+            background-color: #555555; /* 深灰色背景 */
+            cursor: not-allowed; /* 不可点击 */
+        }
+    </style>
 </head>
 <body>
     <h2>Google reCAPTCHA Demo</h2>
