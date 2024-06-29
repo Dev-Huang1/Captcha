@@ -37,7 +37,7 @@
         }
 
         .light-mode #submit-button:disabled {
-            background-color: #cccccc; /* 灰色背景 */
+            background-color: #4CAF50; 
             cursor: not-allowed; /* 不可点击 */
         }
 
