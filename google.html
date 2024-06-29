@@ -3,17 +3,25 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>reCAPTCHA demo: Simple page</title>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <title>reCAPTCHA demo: Explicit render after an onload callback</title>
+    <script type="text/javascript">
+      var onloadCallback = function() {
+        grecaptcha.render('html_element', {
+          'sitekey' : 'your_site_key'
+        });
+      };
+    </script>
     <script src="theme.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
-    <h2>Google reCAPTCHA Demo</h2>
     <form action="?" method="POST">
-      <div class="g-recaptcha" data-sitekey="6Ld08AMqAAAAAK1Z_yK2Yna6-Ku1KvIHg1aOsB5S"></div>
-      <br/>
-      <input type="submit" id="submit-button" value="确认">
+      <div id="html_element"></div>
+      <br>
+      <input type="submit" id="submit-button" value="Submit">
     </form>
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+        async defer>
+    </script>
   </body>
 </html>
