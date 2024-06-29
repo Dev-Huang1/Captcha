@@ -17,10 +17,9 @@
     </form>
     <script>
       document.addEventListener('DOMContentLoaded', function (event) {
-    if (document.getElementById('submit-button').disabled) {
-                event.preventDefault();
-    }
-
+       const submitButton = document.getElementById('submit-button');
+       submitButton.disabled = true;
+    
     function enableSubmitButton() {
         submitButton.disabled = false;
     }
