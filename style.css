@@ -42,12 +42,12 @@
         }
 
         /* 暗色模式按钮 */
-        #submit-button {
+        body.dark-mode #submit-button {
             background-color: #3e8e41; /* 深绿色背景 */
             color: white; /* 白色文字 */
         }
 
-        #submit-button:disabled {
+        body.dark-mode #submit-button:disabled {
             background-color: #555555; /* 深灰色背景 */
             cursor: not-allowed; /* 不可点击 */
         }
