@@ -28,16 +28,15 @@
             border: none; /* 无边框 */
             border-radius: 4px; /* 圆角 */
             transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* 亮色模式按钮 */
+        .light-mode #submit-button {
             background-color: #3e8e41; /* 绿色背景 */
             color: white; /* 白色文字 */
         }
 
-        /* 亮色模式按钮 */
-        #submit-button {
-            
-        }
-
-        #submit-button:disabled {
+        light-mode #submit-button:disabled {
             background-color: #cccccc; 
             cursor: not-allowed; /* 不可点击 */
         }
