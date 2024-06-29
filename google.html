@@ -16,13 +16,13 @@
         <input type="submit" id="submit-button" value="Submit" disabled>
     </form>
     <script>
-      document.addEventListener('DOMContentLoaded', function () {
-    const submitButton = document.getElementById('submit-button');
-    submitButton.disabled = true;
+      document.addEventListener('DOMContentLoaded', function (event) {
+    if (document.getElementById('submit-button').disabled) {
+                event.preventDefault();
+    }
 
     function enableSubmitButton() {
         submitButton.disabled = false;
-        event.preventDefault();
     }
 
     window.onSubmit = enableSubmitButton;
