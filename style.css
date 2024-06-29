@@ -28,7 +28,7 @@
             border: none; /* 无边框 */
             border-radius: 4px; /* 圆角 */
             transition: background-color 0.3s, color 0.3s;
-            background-color: #4caf50; /* 绿色背景 */
+            background-color: #3e8e41; /* 绿色背景 */
             color: white; /* 白色文字 */
         }
 
