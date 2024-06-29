@@ -1,28 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>reCAPTCHA V3 Example</title>
-     <script src="https://www.google.com/recaptcha/api.js"></script>
+  <title>reCAPTCHA v2 隐式验证示例</title>
+  <script src="https://www.recaptcha.net/recaptcha/api.js?onload=myRecaptchaCallback&render=6LdNLTspAAAAACE60DCWv_apztfF8GEgMfynrJGW" async defer></script>
 </head>
 <body>
-    <form action="/index.html" method="POST">
-        <!-- Your form fields go here -->
-        <!-- ... -->
+  <form action="/submit" method="post">
+    <input type="text" name="username" placeholder="用户名">
+    <input type="password" name="password" placeholder="密码">
+    <div id="recaptcha"></div>
+    <button type="submit">提交</button>
+  </form>
 
-        <!-- Add reCAPTCHA widget -->
-        <div id="recaptcha-container"></div>
-
-        <button class="g-recaptcha" 
-        data-sitekey="6LdNLTspAAAAACE60DCWv_apztfF8GEgMfynrJGW" 
-        data-callback='onSubmit' 
-        data-action='submit'>确定</button>
-    </form>
-     <script>
-   function onSubmit(token) {
-     document.getElementById("demo-form").submit();
-   }
-     </script>
+  <script>
+    function myRecaptchaCallback() {
+      // 此处可添加 reCAPTCHA 验证成功后的操作逻辑
+      console.log('reCAPTCHA 验证成功！');
+    }
+  </script>
 </body>
 </html>
