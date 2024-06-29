@@ -13,7 +13,18 @@
     <form action="/submit" method="post">
         <div class="h-captcha" data-sitekey="2190aa94-6bde-422c-b33e-1f38164a06e8"></div>
         <br>
-        <input type="submit" value="Submit">
+        <input type="submit" value="Submit" disabled id="submit-button">
     </form>
+    <script>
+    // 等待hCAPTCHA验证成功后启用按钮
+    const submitButton = document.getElementById('submit-button');
+    const hCaptcha = document.querySelector('.h-captcha');
+
+    hCaptcha.addEventListener('hCaptchaCallback', (event) => {
+        if (event.detail && event.detail.success) {
+            submitButton.removeAttribute('disabled');
+        }
+    });
+    </script>
 </body>
 </html>
