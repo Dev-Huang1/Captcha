@@ -1,4 +1,4 @@
-        /* 基础样式 */
+/* 基础样式 */
         body {
             font-family: Arial, sans-serif;
             transition: background-color 0.3s, color 0.3s;
@@ -31,12 +31,12 @@
         }
 
         /* 亮色模式按钮 */
-        body.light-mode #submit-button {
+        #submit-button {
             background-color: #4CAF50; /* 绿色背景 */
             color: white; /* 白色文字 */
         }
 
-        body.light-mode #submit-button:disabled {
+        #submit-button:disabled {
             background-color: #cccccc; /* 灰色背景 */
             cursor: not-allowed; /* 不可点击 */
         }
