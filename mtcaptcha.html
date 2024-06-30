@@ -1,1 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- MTCaptcha JavaScript 配置和导入，复制开始 -->
+    <script>
+        var mtcaptchaConfig = {
+            "sitekey": "MTPublic-D7Qv7ciaC"
+        };
+        (function () {
+            var mt_service = document.createElement('script');
+            mt_service.async = true;
+            mt_service.src = 'https://service.mtcaptcha.com/mtcv1/client/mtcaptcha.min.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(mt_service);
+        })();
+    </script>
+    <!-- MTCaptcha JavaScript 配置和导入，复制结束 -->
+</head>
+<body>
+    <h2>MTcaptcha Demo</h2>
+    <form>
+        <!-- MTCaptcha Anchor DOM，复制开始 -->
+        <div class="mtcaptcha"></div>
+        <!-- MTCaptcha Anchor DOM，复制结束 -->
+        <button type="submit" disabled>提交</button>
+    </form>
+    <script>
+        // 在验证成功后启用提交按钮
+        mtcaptchaConfig.callback = function (response) {
+            if (response === 'verified') {
+                document.querySelector('button[type="submit"]').removeAttribute('disabled');
+            }
+        };
+    </script>
+</body>
+</html>
 
