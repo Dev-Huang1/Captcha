@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- MTCaptcha JavaScript 配置和导入，复制开始 -->
     <script>
         var mtcaptchaConfig = {
@@ -21,7 +23,7 @@
         <!-- MTCaptcha Anchor DOM，复制开始 -->
         <div class="mtcaptcha"></div>
         <!-- MTCaptcha Anchor DOM，复制结束 -->
-        <button type="submit" disabled>提交</button>
+        <button type="submit" id="submit-button" disabled>submit</button>
     </form>
     <script>
         // 在验证成功后启用提交按钮
