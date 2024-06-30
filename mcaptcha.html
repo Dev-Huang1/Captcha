@@ -10,13 +10,12 @@
 </head>
 <body>
     <h2>mCAPTCHA Demo</h2>
-    <form id="myForm" action="#" method="post">
-        <div class="m-captcha" 
-             data-sitekey="iHdsVgQoKMX3XINmPLUStQEOCfHsjTfn" 
-             data-callback="onSuccess">
-        </div>
-        <button id="submit-button" type="submit" disabled>submit</button>
-    </form>
+    <label data-mcaptcha_url="{{paste your widget link here}}" for="mcaptcha__token" id="mcaptcha__token-label">
+        <a href="https://mcaptcha.org/docs/user-manual/how-to-mcaptcha-without-js/">Instructions</a>
+        <input type="text" name="mcaptcha__token" id="mcaptcha__token" />
+    </label>
+    <div id="mcaptcha__widget-container"></div>
+    <script src="https://unpkg.com/@mcaptcha/vanilla-glue@0.1.0-rc2/dist/index.js"></script>
 
     <script>
         function onSuccess() {
