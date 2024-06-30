@@ -1,30 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>mCAPTCHA Demo</title>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://www.mcaptcha.com/api.js"></script>
 </head>
 <body>
-    <h1>mCAPTCHA Demo</h1>
-    <form action="submit.php" method="post">
-        <!-- Replace "iHdsVgQoKMX3XINmPLUStQEOCfHsjTfn" with your actual SiteKey -->
-        <div class="g-recaptcha" data-sitekey="iHdsVgQoKMX3XINmPLUStQEOCfHsjTfn"></div>
-        <button type="submit" id="submitBtn" disabled>Submit</button>
+    <h2>mCAPTCHA Demo</h2>
+    <form id="myForm" action="#" method="post">
+        <div class="m-captcha" 
+             data-sitekey="iHdsVgQoKMX3XINmPLUStQEOCfHsjTfn" 
+             data-callback="onSuccess">
+        </div>
+        <button id="submitBtn" type="submit" disabled>提交</button>
     </form>
 
     <script>
-        // 在成功验证 reCAPTCHA 后启用提交按钮
-        function enableSubmitButton() {
-            document.getElementById("submitBtn").removeAttribute("disabled");
-        }
-
-        // reCAPTCHA 验证成功后执行的回调函数
-        function recaptchaCallback() {
-            enableSubmitButton();
+        function onSuccess() {
+            document.getElementById('submitBtn').disabled = false;
         }
     </script>
 </body>
 </html>
-
