@@ -22,16 +22,14 @@
         const submitButton = document.getElementById("submit-button");
         const captchaWidget = document.querySelector(".frc-captcha");
 
-        customElements.whenDefined('friendly-captcha').then(() => {
-            captchaWidget.addEventListener("friendlyCaptcha-success", () => {
-                submitButton.removeAttribute("disabled");
-            });
+        window.addEventListener("friendlyCaptcha-success", () => {
+            submitButton.removeAttribute("disabled");
+        });
 
-            captchaWidget.addEventListener("friendlyCaptcha-reset", () => {
-                submitButton.setAttribute("disabled", true);
-            });
+        window.addEventListener("friendlyCaptcha-error", () => {
+            submitButton.setAttribute("disabled", true);
         });
     });
-    </script>
+</script>
 </body>
 </html>
