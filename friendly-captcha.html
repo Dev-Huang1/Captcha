@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friendly Captcha Demo</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- Load Friendly Captcha SDK -->
+    <script src="/javascript/theme.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@friendlycaptcha/sdk/site.min.js" async defer></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@friendlycaptcha/sdk/site.compat.min.js" async defer></script>
+</head>
+<body>
+    <h2>Friendly Captcha Demo</h2>
+    <!-- Add the captcha widget -->
+    <div class="frc-captcha" data-sitekey="FCMQT7KCMPMI5LG1"></div>
+    <!-- Add the submit button -->
+    <button id="submit-button" disabled>Submit</button>
+
+    <script>
+        // Enable the submit button when captcha is successfully solved
+        document.addEventListener("DOMContentLoaded", function () {
+            const submitButton = document.getElementById("submit-button");
+            const captchaWidget = document.querySelector(".frc-captcha");
+
+            // Listen for captcha success event
+            captchaWidget.addEventListener("friendlyCaptcha.success", () => {
+                submitButton.removeAttribute("disabled");
+            });
+
+            // Listen for captcha reset event
+            captchaWidget.addEventListener("friendlyCaptcha.reset", () => {
+                submitButton.setAttribute("disabled", true);
+            });
+        });
+    </script>
+</body>
+</html>
