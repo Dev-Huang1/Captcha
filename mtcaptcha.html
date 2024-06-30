@@ -6,7 +6,12 @@
     <!-- MTCaptcha JavaScript 配置和导入，复制开始 -->
     <script>
         var mtcaptchaConfig = {
-            "sitekey": "MTPublic-D7Qv7ciaC"
+            "sitekey": "MTPublic-D7Qv7ciaC",
+            "callback": function (response) {
+                if (response === 'verified') {
+                    document.querySelector('#submit-button').removeAttribute('disabled');
+                }
+            }
         };
         (function () {
             var mt_service = document.createElement('script');
@@ -25,14 +30,5 @@
         <!-- MTCaptcha Anchor DOM，复制结束 -->
         <button type="submit" id="submit-button" disabled>submit</button>
     </form>
-    <script>
-        // 在验证成功后启用提交按钮
-        mtcaptchaConfig.callback = function (response) {
-            if (response === 'verified') {
-                document.querySelector('button[type="submit"]').removeAttribute('disabled');
-            }
-        };
-    </script>
 </body>
 </html>
-
