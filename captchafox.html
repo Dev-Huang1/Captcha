@@ -4,29 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Captcha Fox Demo</title>
-    <!-- Include Captcha Fox script -->
-    <script src="https://captchafox.com/captcha.js" defer></script>
-</head>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/iframe.css">
+    <script src="/javascript/theme.js">
 <body>
-    <h1>Captcha Fox Demo</h1>
-    <!-- Add Captcha Fox widget with the provided Sitekey -->
-    <div class="captcha-fox-widget" data-sitekey="sk_ZEIFJaVJSs96JQcrqQIMutNjKkkgw"></div>
-    <button onclick="verifyCaptcha()">Submit</button>
-
-    <script>
-        // Verify Captcha on button click
-        function verifyCaptcha() {
-            const captchaFox = document.querySelector('.captcha-fox-widget');
-            const token = captchaFox.getAttribute('data-token');
-            
-            if (token) {
-                // You can send the token to your server for verification
-                console.log('Captcha token:', token);
-                // Add your server-side verification logic here
-            } else {
-                alert('Please complete the Captcha.');
-            }
-        }
-    </script>
+    <h2>Captcha Fox Demo</h2>
+    <iframe src="https://captchafox.com/#demo" height="500px" scrolling="no"></iframe>
 </body>
 </html>
