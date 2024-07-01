@@ -3,22 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lemin CAPTCHA Demo</title>
-    <!-- 将以下脚本标签添加到您的 HTML 中 -->
-    <script src="https://api.leminnow.com/captcha/v1/cropped/CROPPED_3a73c7e_ddaf3bdb83464b86a64ed94c5bd65bf2/js"></script>
+    <title>Lemin Captcha Demo</title>
 </head>
 <body>
-    <h2>Lemin CAPTCHA Demo</h2>
-    <!-- 在您的表单中添加 Lemin CAPTCHA -->
-    <form action="your_form_action.php" method="post">
-        <!-- 这里是您的其他表单字段 -->
-        <!-- ... -->
-
-        <!-- Lemin CAPTCHA 将显示在这里 -->
-        <div id="lemin-cropped-captcha"></div>
-
-        <!-- 提交按钮 -->
-        <button type="submit">提交</button>
+    <h2>Lemin Captcha Demo</h2>
+    <form id="captchaForm">
+        <div id="captcha-container"></div>
+        <button type="submit">Submit</button>
     </form>
+
+    <script src="https://api.leminnow.com/captcha/v1/cropped/CROPPED_3a73c7e_ddaf3bdb83464b86a64ed94c5bd65bf2/js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Initialize the captcha
+            LeminCaptcha.render('captcha-container', {
+                sitekey: '3a73c7e_ddaf3bdb83464b86a64ed94c5bd65bf2' // Replace with your actual site key
+            });
+
+            document.getElementById('captchaForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                var captchaResponse = LeminCaptcha.getResponse();
+                if (!captchaResponse) {
+                    alert('Please complete the captcha');
+                } else {
+                    // Process the form data with the captcha response
+                    alert('Captcha completed successfully!');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
