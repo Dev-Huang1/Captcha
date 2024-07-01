@@ -7,31 +7,38 @@
 </head>
 <body>
     <h2>Lemin CAPTCHA Demo</h2>
-    <!-- 这里是你的页面内容 -->
     <form>
-        <!-- 其他表单元素... -->
+        <!-- Other form elements... -->
         <div id="lemin-cropped-captcha"></div>
         <input type="hidden" name="lemin_answer">
         <input type="hidden" name="lemin_challenge_id">
-        <button onclick="solveLemin()">检查</button>
+        <button type="button" onclick="solveLemin()">Check CAPTCHA</button>
     </form>
 
-    <!-- 引入 Lemin CAPTCHA 脚本 -->
+    <!-- Load Lemin CAPTCHA script -->
     <script src="https://api.leminnow.com/captcha/v1/cropped/CROPPED_3a73c7e_ddaf3bdb83464b86a64ed94c5bd65bf2/js"></script>
 
     <script>
         function solveLemin() {
-            // 获取 Lemin CAPTCHA 答案
+            // Get Lemin CAPTCHA answer
             const leminAnswer = "0xaxcgx0xkxbsx0xuxb8x0xuxaux0xuxaax0xux9mx0x18x9cx0x18x92x0x18x8ox0x18x8ex0x18x7qx0x18x7gx0x18x76x0x18x6sx0x18x6ix0x18x68x0xux68x_?_gAAAAABkAHJ-DXKWoMr34j7Y-K5vt6rqQIMCcG0V4KdtDhYghZGq9Uhg0SJoUX_u2414Qeq_-dEet4IGxMbZE2F_agSXTF-8w9Iy07J84I5NcQ6iPbQgPz2R74S7fWws3rn3X5AdmOYb";
             const leminChallengeId = "578c0b7b-248f-480e-a3b0-fbe2cbfdcb8b";
 
-            // 填充隐藏的输入字段
+            // Fill hidden input fields
             document.querySelector('input[name=lemin_answer]').value = leminAnswer;
             document.querySelector('input[name=lemin_challenge_id]').value = leminChallengeId;
 
-            // 在这里执行你的其他逻辑
-            // ...
+            // Submit the form or perform other logic
+            // document.querySelector('form').submit();
         }
+
+        // Ensure the Lemin CAPTCHA script initializes correctly
+        window.addEventListener('load', function () {
+            // Initialize Lemin CAPTCHA if required
+            if (typeof leminCaptcha !== 'undefined') {
+                leminCaptcha.init();
+            }
+        });
     </script>
 </body>
 </html>
