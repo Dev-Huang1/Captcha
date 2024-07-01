@@ -3,36 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/style.css">
-    <script src="/javascript/theme.js"></script>
-    <title>Lemin CAPTCHA 示例</title>
+    <title>Lemin CAPTCHA Demo</title>
+    <!-- 将以下脚本标签添加到您的 HTML 中 -->
+    <script src="https://api.leminnow.com/captcha/v1/cropped/CROPPED_3a73c7e_ddaf3bdb83464b86a64ed94c5bd65bf2/js"></script>
 </head>
 <body>
-    <!-- 这里是你的页面内容 -->
-    <form>
-        <!-- 其他表单元素... -->
+    <h2>Lemin CAPTCHA Demo</h2>
+    <!-- 在您的表单中添加 Lemin CAPTCHA -->
+    <form action="your_form_action.php" method="post">
+        <!-- 这里是您的其他表单字段 -->
+        <!-- ... -->
+
+        <!-- Lemin CAPTCHA 将显示在这里 -->
         <div id="lemin-cropped-captcha"></div>
-        <input type="hidden" name="lemin_answer">
-        <input type="hidden" name="lemin_challenge_id">
-        <button onclick="solveLemin()">检查</button>
+
+        <!-- 提交按钮 -->
+        <button type="submit">提交</button>
     </form>
-
-    <!-- 引入 Lemin CAPTCHA 脚本 -->
-    <script src="https://api.leminnow.com/captcha/v1/cropped/CROPPED_3a73c7e_ddaf3bdb83464b86a64ed94c5bd65bf2/js"></script>
-
-    <script>
-        function solveLemin() {
-            // 获取 Lemin CAPTCHA 答案
-            const leminAnswer = "0xaxcgx0xkxbsx0xuxb8x0xuxaux0xuxaax0xux9mx0x18x9cx0x18x92x0x18x8ox0x18x8ex0x18x7qx0x18x7gx0x18x76x0x18x6sx0x18x6ix0x18x68x0xux68x_?_gAAAAABkAHJ-DXKWoMr34j7Y-K5vt6rqQIMCcG0V4KdtDhYghZGq9Uhg0SJoUX_u2414Qeq_-dEet4IGxMbZE2F_agSXTF-8w9Iy07J84I5NcQ6iPbQgPz2R74S7fWws3rn3X5AdmOYb";
-            const leminChallengeId = "578c0b7b-248f-480e-a3b0-fbe2cbfdcb8b";
-
-            // 填充隐藏的输入字段
-            document.querySelector('input[name=lemin_answer]').value = leminAnswer;
-            document.querySelector('input[name=lemin_challenge_id]').value = leminChallengeId;
-
-            // 在这里执行你的其他逻辑
-            // ...
-        }
-    </script>
 </body>
 </html>
