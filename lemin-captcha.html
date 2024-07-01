@@ -7,7 +7,7 @@
 </head>
 <body>
     <h2>Lemin CAPTCHA Demo</h2>
-    <form>
+    <form id="demo-form">
         <!-- Other form elements... -->
         <div id="lemin-cropped-captcha"></div>
         <input type="hidden" name="lemin_answer">
@@ -28,8 +28,8 @@
             document.querySelector('input[name=lemin_answer]').value = leminAnswer;
             document.querySelector('input[name=lemin_challenge_id]').value = leminChallengeId;
 
-            // Submit the form or perform other logic
-            // document.querySelector('form').submit();
+            // Submit the form
+            document.getElementById('demo-form').submit();
         }
 
         // Ensure the Lemin CAPTCHA script initializes correctly
