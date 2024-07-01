@@ -5,12 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arkose Labs funcaptcha Demo</title>
     <link rel="stylesheet" type="text/css" href="/css/index.css">
-    <!--<link rel="stylesheet" type="text/css" href="/css/iframe.css">-->
+    <link rel="stylesheet" type="text/css" href="/css/iframe.css">
     <script src="/javascript/theme.js"></script>
+    <style>
+        .container {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 纵横比（9 除以 16 = 0.5625） */
+}
+
+.responsive-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+}
+    </style>
 </head>
 <body>
     <h2>Arkose Labs funcaptcha Demo</h2>
     
-    <iframe src="https://iframe.arkoselabs.com/3EE79F8D-13A6-474B-9278-448EA19F79B3/index.html" height="450px"></iframe>
+    <div class="container">
+        <iframe class="responsive-iframe" src="https://iframe.arkoselabs.com/3EE79F8D-13A6-474B-9278-448EA19F79B3/index.html"></iframe>
+    </div>
 </body>
 </html>
