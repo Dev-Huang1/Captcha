@@ -8,29 +8,31 @@
     <link rel="stylesheet" type="text/css" href="/css/iframe.css">
     <script src="/javascript/theme.js"></script>
     <style>
-        .container {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    padding-top: 56.25%; /* 16:9 纵横比（9 除以 16 = 0.5625） */
-}
+        /* Ensure iframe is responsive */
+        iframe {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            min-height: 450px; /* Set a minimum height */
+            border: none;
+        }
 
-.responsive-iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-}
+        /* Optional: Add some margin or padding to h2 and iframe */
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        /* Media query for small devices */
+        @media (max-width: 600px) {
+            iframe {
+                height: 400px; /* Adjust height for smaller devices if needed */
+            }
+        }
     </style>
 </head>
 <body>
     <h2>Arkose Labs funcaptcha Demo</h2>
     
-    <div class="container">
-        <iframe class="responsive-iframe" src="https://iframe.arkoselabs.com/3EE79F8D-13A6-474B-9278-448EA19F79B3/index.html"></iframe>
-    </div>
+    <iframe src="https://iframe.arkoselabs.com/3EE79F8D-13A6-474B-9278-448EA19F79B3/index.html"></iframe>
 </body>
 </html>
