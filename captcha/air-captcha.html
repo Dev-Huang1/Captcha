@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Behavior-based Captcha</title>
+    <title>AIR - Captcha Demo</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
     <style>
         #captcha-container {
-            width: 300px;
+            width: 260px;
+            height: 40px;
             border: 1px solid #ccc;
             padding: 20px;
             margin: 50px auto;
-            text-align: center;
+            text-align: left;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             display: flex;
@@ -30,12 +31,36 @@
             margin-right: 20px;
         }
         #brand {
-            font-weight: bold;
-        }
+    font-weight: bold;
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* 右对齐 */
+    position: relative;
+    margin-top: 19px; /* 往下偏一点 */
+}
+
+#brand img {
+    width: 35px; /* 调整logo大小 */
+    position: absolute;
+    right: 0; /* 靠右对齐 */
+    top: -30px; /* 调整这个值使其靠近文字 */
+}
         #success-icon, #failure-icon {
             width: 35px;
             height: 35px;
             margin-left: 5px;
+        }
+        #verification-text {
+            margin-left: 10px;
+            color: green;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        #loading-text {
+            display: none;
+            margin-right: 20px;
+            font-size: 16px;
         }
     </style>
 </head>
@@ -45,14 +70,18 @@
         <div id="verify-section">
             <input type="checkbox" id="verify-checkbox">
             <label for="verify-checkbox" id="captcha-label">I'm not a robot.</label>
-            <img id="check-mark" src="/css/check-mark.svg" style="display: none;width: 25px; height: 25px;">
+            <span id="loading-text">Verifying...</span>
+            <img id="check-mark" src="/css/check-mark.svg" style="display: none; width: 30px; height: 30px;">
+            <p id="verification-text" style="display: none;">Verification successful</p>
             <p id="error-message" style="color: red; display: none;">Please re-verify</p>
         </div>
-        <div id="brand">AIR-Captcha</div>
+        <div id="brand">
+            <img src="../css/air-captcha-logo.svg" alt="AIR Captcha Logo">
+            AIR Captcha
+        </div>
     </div>
     <button id="submit-button" disabled>Submit</button>
     
-
     <noscript>
         <style>
             #captcha-label, #verify-checkbox {
@@ -74,10 +103,44 @@
             const verifyCheckbox = document.getElementById('verify-checkbox');
             const captchaLabel = document.getElementById('captcha-label');
             const checkMark = document.getElementById('check-mark');
+            const verificationText = document.getElementById('verification-text');
             const errorMessage = document.getElementById('error-message');
             const submitButton = document.getElementById('submit-button');
+            const loadingText = document.getElementById('loading-text');
             let mouseMovements = [];
             let isTouchDevice = 'ontouchstart' in document.documentElement;
+
+            const translations = {
+                en: {
+                    captchaLabel: "I'm not a robot.",
+                    verifyingText: "Verifying...",
+                    verificationSuccess: "Verification successful",
+                    verificationError: "Please re-verify"
+                },
+                zh: {
+                    captchaLabel: "我不是机器人",
+                    verifyingText: "验证中...",
+                    verificationSuccess: "验证成功",
+                    verificationError: "请重新验证"
+                }
+                // 你可以在这里添加更多语言
+            };
+
+            function detectLanguage() {
+                const userLang = navigator.language || navigator.userLanguage;
+                return userLang.startsWith('zh') ? 'zh' : 'en'; // 默认返回 'en'，可以根据需要修改
+            }
+
+            function setLanguage(lang) {
+                const translation = translations[lang];
+                captchaLabel.textContent = translation.captchaLabel;
+                loadingText.textContent = translation.verifyingText;
+                verificationText.textContent = translation.verificationSuccess;
+                errorMessage.textContent = translation.verificationError;
+            }
+
+            const userLang = detectLanguage();
+            setLanguage(userLang);
 
             function recordMouseMovement(event) {
                 const position = { x: event.clientX, y: event.clientY, time: Date.now() };
@@ -119,20 +182,25 @@
 
             verifyCheckbox.addEventListener('change', () => {
                 if (verifyCheckbox.checked) {
+                    captchaLabel.style.display = 'none';
+                    verifyCheckbox.style.display = 'none';
+                    loadingText.style.display = 'block';
+                    
                     if (isTouchDevice) {
                         setTimeout(() => {
-                            captchaLabel.style.display = 'none';
-                            verifyCheckbox.style.display = 'none';
+                            loadingText.style.display = 'none';
                             checkMark.style.display = 'block';
+                            verificationText.style.display = 'block';
                             submitButton.disabled = false;
                         }, 1000);
                     } else {
                         if (isValidMovement(mouseMovements)) {
-                            captchaLabel.style.display = 'none';
-                            verifyCheckbox.style.display = 'none';
+                            loadingText.style.display = 'none';
                             checkMark.style.display = 'block';
+                            verificationText.style.display = 'block';
                             submitButton.disabled = false;
                         } else {
+                            loadingText.style.display = 'none';
                             errorMessage.style.display = 'block';
                             verifyCheckbox.checked = false;
                         }
