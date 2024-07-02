@@ -3,139 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIR-Captcha Integration</title>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
     <style>
-        .captcha-container {
-            width: 300px;
-            border: 1px solid #ccc;
-            padding: 20px;
-            margin: 50px auto;
-            text-align: center;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-family: Arial, sans-serif;
-        }
-        .verify-section {
-            display: flex;
-            align-items: center;
-        }
-        .verify-checkbox {
-            margin-right: 10px;
-        }
-        .captcha-label {
-            margin-right: 20px;
-        }
-        .brand {
-            font-weight: bold;
-        }
-        .success, .failure {
-            display: none;
-        }
-        #success-icon, #failure-icon {
-            width: 35px;
-            height: 35px;
-            margin-left: 5px;
-        }
+        #captcha-container {
+    width: 300px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 50px auto;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: Arial, sans-serif;
+}
+#verify-section {
+    display: flex;
+    align-items: center;
+}
+#verify-checkbox {
+    margin-right: 10px;
+}
+#captcha-label {
+    margin-right: 20px;
+}
+#brand {
+    font-weight: bold;
+}
+#success-icon, #failure-icon {
+    width: 35px;
+    height: 35px;
+    margin-left: 5px;
+}
     </style>
 </head>
 <body>
-    <div class="captcha-container" id="captcha-container">
-        <div class="verify-section">
-            <input type="checkbox" id="verify-checkbox" class="verify-checkbox">
-            <label for="verify-checkbox" class="captcha-label">Verify</label>
-            <img src="check-mark.svg" alt="Check Mark" id="success-icon">
-            <img src="cross-mark.svg" alt="Cross Mark" id="failure-icon">
+    <div id="captcha-container">
+        <div id="verify-section">
+            <input type="checkbox" id="verify-checkbox">
+            <label for="verify-checkbox" id="captcha-label">I'm not a robot</label>
+            <img id="check-mark" src="https://test.xyehr.cn/css/check-mark.svg" style="display: none;width: 25px; height: 25px;">
+            <p id="error-message" style="color: red; display: none;">Verification failed. Please try again.</p>
         </div>
-        <div class="brand">AIR-Captcha</div>
+        <div id="brand">AIR-Captcha</div>
     </div>
 
-    <button id="submit" disabled>Submit</button>
+    <noscript>
+        <style>
+            #captcha-label, #verify-checkbox {
+                display: none;
+            }
+            #noscript-message {
+                display: block;
+                color: green;
+            }
+        </style>
+        <p id="noscript-message">Verification Passed (No JavaScript)</p>
+        <script>
+            document.getElementById('submit-button').disabled = false;
+        </script>
+    </noscript>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const captchaContainer = document.getElementById('captcha-container');
-            const verifyCheckbox = document.getElementById('verify-checkbox');
-            const submitButton = document.getElementById('submit');
-            const successIcon = document.getElementById('success-icon');
-            const failureIcon = document.getElementById('failure-icon');
-            let mouseMovements = [];
-            let isTouchDevice = 'ontouchstart' in document.documentElement;
+    (function() {
+        const verifyCheckbox = document.getElementById('verify-checkbox');
+        const captchaLabel = document.getElementById('captcha-label');
+        const checkMark = document.getElementById('check-mark');
+        const errorMessage = document.getElementById('error-message');
+        const submitButton = document.getElementById('submit-button');
+        
+        let mouseMovements = [];
+        let keyPresses = [];
+        let scrollEvents = [];
+        let touchEvents = [];
+        let lastActivityTime = Date.now();
+        let isTouchDevice = 'ontouchstart' in document.documentElement;
+        let pageLoadTime = Date.now();
 
-            function recordMouseMovement(event) {
-                const position = { x: event.clientX, y: event.clientY, time: Date.now() };
-                mouseMovements.push(position);
-            }
+        function recordMouseMovement(event) {
+            mouseMovements.push({ x: event.clientX, y: event.clientY, time: Date.now() });
+            updateLastActivityTime();
+        }
 
-            function calculateSpeed(movements) {
-                let totalSpeed = 0;
-                for (let i = 1; i < movements.length; i++) {
-                    const dx = movements[i].x - movements[i - 1].x;
-                    const dy = movements[i].y - movements[i - 1].y;
-                    const dt = movements[i].time - movements[i - 1].time;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    const speed = distance / dt;
-                    totalSpeed += speed;
-                }
-                return totalSpeed / (movements.length - 1);
-            }
+        function recordKeyPress(event) {
+            keyPresses.push({ key: event.key, time: Date.now() });
+            updateLastActivityTime();
+        }
 
-            function isValidMovement(movements) {
-                if (movements.length < 5) return false;
+        function recordScrollEvent() {
+            scrollEvents.push({ scrollTop: window.scrollY, time: Date.now() });
+            updateLastActivityTime();
+        }
 
-                const averageSpeed = calculateSpeed(movements);
-                let deviations = 0;
-                for (let i = 1; i < movements.length; i++) {
-                    const dx = movements[i].x - movements[i - 1].x;
-                    const dy = movements[i].y - movements[i - 1].y;
-                    const dt = movements[i].time - movements[i - 1].time;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    const speed = distance / dt;
-                    if (Math.abs(speed - averageSpeed) > averageSpeed * 0.5) {
-                        deviations++;
-                    }
-                }
-                return deviations > (movements.length * 0.3);
-            }
-
-            document.addEventListener('mousemove', recordMouseMovement);
-
-            verifyCheckbox.addEventListener('change', () => {
-                if (verifyCheckbox.checked) {
-                    if (isTouchDevice) {
-                        setTimeout(() => {
-                            captchaContainer.classList.remove('failure');
-                            captchaContainer.classList.add('success');
-                            successIcon.style.display = 'inline-block';
-                            failureIcon.style.display = 'none';
-                            submitButton.disabled = false;
-                        }, 1000);
-                    } else {
-                        if (isValidMovement(mouseMovements)) {
-                            captchaContainer.classList.remove('failure');
-                            captchaContainer.classList.add('success');
-                            successIcon.style.display = 'inline-block';
-                            failureIcon.style.display = 'none';
-                            submitButton.disabled = false;
-                        } else {
-                            captchaContainer.classList.remove('success');
-                            captchaContainer.classList.add('failure');
-                            successIcon.style.display = 'none';
-                            failureIcon.style.display = 'inline-block';
-                            verifyCheckbox.checked = false;
-                        }
-                    }
-                    window.alert = function() {}; // Disable browser alert
-                } else {
-                    captchaContainer.classList.remove('success', 'failure');
-                    successIcon.style.display = 'none';
-                    failureIcon.style.display = 'none';
-                    submitButton.disabled = true;
-                }
+        function recordTouchEvent(event) {
+            touchEvents.push({ 
+                touches: Array.from(event.touches).map(t => ({ x: t.clientX, y: t.clientY })),
+                time: Date.now()
             });
+            updateLastActivityTime();
+        }
+
+        function updateLastActivityTime() {
+            lastActivityTime = Date.now();
+        }
+
+        function calculateEntropy(arr) {
+            const counts = {};
+            arr.forEach(item => {
+                counts[item] = (counts[item] || 0) + 1;
+            });
+            return Object.values(counts).reduce((entropy, count) => {
+                const p = count / arr.length;
+                return entropy - p * Math.log2(p);
+            }, 0);
+        }
+
+        function isHumanLike() {
+            const timeSincePageLoad = Date.now() - pageLoadTime;
+            const activityInterval = Date.now() - lastActivityTime;
+
+            // 检查是否有足够的鼠标移动
+            if (mouseMovements.length < 10) return false;
+
+            // 检查鼠标移动的熵
+            const mouseXEntropy = calculateEntropy(mouseMovements.map(m => m.x));
+            const mouseYEntropy = calculateEntropy(mouseMovements.map(m => m.y));
+            if (mouseXEntropy < 2 || mouseYEntropy < 2) return false;
+
+            // 检查按键的多样性
+            if (keyPresses.length > 0 && calculateEntropy(keyPresses.map(k => k.key)) < 1.5) return false;
+
+            // 检查滚动行为
+            if (scrollEvents.length > 0 && calculateEntropy(scrollEvents.map(s => s.scrollTop)) < 1) return false;
+
+            // 检查触摸事件（如果是触摸设备）
+            if (isTouchDevice && touchEvents.length < 5) return false;
+
+            // 检查验证时间是否合理
+            if (timeSincePageLoad < 1000 || timeSincePageLoad > 300000) return false;
+
+            // 检查最后活动时间
+            if (activityInterval > 60000) return false;
+
+            return true;
+        }
+
+        document.addEventListener('mousemove', recordMouseMovement);
+        document.addEventListener('keydown', recordKeyPress);
+        window.addEventListener('scroll', recordScrollEvent);
+        if (isTouchDevice) {
+            document.addEventListener('touchstart', recordTouchEvent);
+            document.addEventListener('touchmove', recordTouchEvent);
+        }
+
+        verifyCheckbox.addEventListener('change', () => {
+            if (verifyCheckbox.checked) {
+                if (isHumanLike()) {
+                    captchaLabel.style.display = 'none';
+                    verifyCheckbox.style.display = 'none';
+                    checkMark.style.display = 'block';
+                    if (submitButton) submitButton.disabled = false;
+                } else {
+                    errorMessage.style.display = 'block';
+                    verifyCheckbox.checked = false;
+                }
+            }
         });
+    })();
     </script>
 </body>
 </html>
