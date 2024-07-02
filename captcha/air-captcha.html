@@ -3,71 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIRcaptcha Example</title>
+    <title>Mouse Movement CAPTCHA</title>
+    <style>
+        #verify-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
-    <h1>AIRcaptcha Example</h1>
-    <button id="start">Start Verification</button>
-    <p id="status"></p>
-
+    <button id="verify-btn">Verify</button>
     <script>
-        let userId = null;
-        let startTime = null;
-        let mouseMovements = 0;
-        let clicks = 0;
+        const verifyBtn = document.getElementById('verify-btn');
+        let mouseMovements = [];
+        let isTouchDevice = 'ontouchstart' in document.documentElement;
 
-        document.getElementById('start').addEventListener('click', async () => {
-            // 获取用户ID
-            const response = await fetch('http://localhost:3000/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            const data = await response.json();
-            userId = data.userId;
-            startTime = Date.now();
-            document.getElementById('status').innerText = 'Verification started. Please interact with the page.';
-        });
+        function recordMouseMovement(event) {
+            const position = { x: event.clientX, y: event.clientY, time: Date.now() };
+            mouseMovements.push(position);
+        }
 
-        // 监听用户行为
-        document.addEventListener('mousemove', () => {
-            mouseMovements++;
-        });
+        function calculateSpeed(movements) {
+            let totalSpeed = 0;
+            for (let i = 1; i < movements.length; i++) {
+                const dx = movements[i].x - movements[i - 1].x;
+                const dy = movements[i].y - movements[i - 1].y;
+                const dt = movements[i].time - movements[i - 1].time;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const speed = distance / dt;
+                totalSpeed += speed;
+            }
+            return totalSpeed / (movements.length - 1);
+        }
 
-        document.addEventListener('click', () => {
-            clicks++;
-        });
+        function isValidMovement(movements) {
+            if (movements.length < 5) return false;
 
-        // 假设10秒后发送验证数据
-        setInterval(async () => {
-            if (userId) {
-                const timeSpent = (Date.now() - startTime) / 1000;
-
-                const behaviorData = {
-                    timeSpent,
-                    mouseMovements,
-                    clicks
-                };
-
-                // 发送用户行为数据进行验证
-                const response = await fetch('http://localhost:3000/verify', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ userId, behaviorData })
-                });
-
-                const result = await response.json();
-
-                if (result.isHuman) {
-                    document.getElementById('status').innerText = 'Human verification passed!';
-                } else {
-                    document.getElementById('status').innerText = 'Verification failed. Please interact more with the page.';
+            const averageSpeed = calculateSpeed(movements);
+            let deviations = 0;
+            for (let i = 1; i < movements.length; i++) {
+                const dx = movements[i].x - movements[i - 1].x;
+                const dy = movements[i].y - movements[i - 1].y;
+                const dt = movements[i].time - movements[i - 1].time;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const speed = distance / dt;
+                if (Math.abs(speed - averageSpeed) > averageSpeed * 0.5) {
+                    deviations++;
                 }
             }
-        }, 10000); // 每10秒发送一次数据
+            return deviations > (movements.length * 0.3);
+        }
+
+        document.addEventListener('mousemove', recordMouseMovement);
+
+        verifyBtn.addEventListener('click', () => {
+            if (isTouchDevice) {
+                setTimeout(() => {
+                    alert('Verification Passed (Touch Device)');
+                }, 1000);
+            } else {
+                if (isValidMovement(mouseMovements)) {
+                    alert('Verification Passed');
+                } else {
+                    alert('Verification Failed');
+                }
+            }
+        });
     </script>
 </body>
 </html>
