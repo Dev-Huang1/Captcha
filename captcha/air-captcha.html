@@ -56,86 +56,90 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const captchaContainer = document.getElementById('captcha-container');
-            const verifyCheckbox = document.getElementById('verify-checkbox');
-            const submitButton = document.getElementById('submit');
-            const successIcon = document.getElementById('success-icon');
-            const failureIcon = document.getElementById('failure-icon');
-            let mouseMovements = [];
-            let isTouchDevice = 'ontouchstart' in document.documentElement;
+  const captchaContainer = document.getElementById('captcha-container');
+  const verifyCheckbox = document.getElementById('verify-checkbox');
+  const submitButton = document.getElementById('submit');
+  const successIcon = document.getElementById('success-icon');
+  const failureIcon = document.getElementById('failure-icon');
+  let mouseMovements = [];
+  let isTouchDevice = 'ontouchstart' in document.documentElement;
 
-            function recordMouseMovement(event) {
-                const position = { x: event.clientX, y: event.clientY, time: Date.now() };
-                mouseMovements.push(position);
-            }
+  function recordMouseMovement(event) {
+    const position = { x: event.clientX, y: event.clientY, time: Date.now() };
+    mouseMovements.push(position);
+  }
 
-            function calculateSpeed(movements) {
-                let totalSpeed = 0;
-                for (let i = 1; i < movements.length; i++) {
-                    const dx = movements[i].x - movements[i - 1].x;
-                    const dy = movements[i].y - movements[i - 1].y;
-                    const dt = movements[i].time - movements[i - 1].time;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    const speed = distance / dt;
-                    totalSpeed += speed;
-                }
-                return totalSpeed / (movements.length - 1);
-            }
+  function calculateSpeed(movements) {
+    let totalSpeed = 0;
+    for (let i = 1; i < movements.length; i++) {
+      const dx = movements[i].x - movements[i - 1].x;
+      const dy = movements[i].y - movements[i - 1].y;
+      const dt = movements[i].time - movements[i - 1].time;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const speed = distance / dt;
+      totalSpeed += speed;
+    }
+    return totalSpeed / (movements.length - 1);
+  }
 
-            function isValidMovement(movements) {
-                if (movements.length < 5) return false;
+  function isValidMovement(movements) {
+    if (movements.length < 5) return false;
 
-                const averageSpeed = calculateSpeed(movements);
-                let deviations = 0;
-                for (let i = 1; i < movements.length; i++) {
-                    const dx = movements[i].x - movements[i - 1].x;
-                    const dy = movements[i].y - movements[i - 1].y;
-                    const dt = movements[i].time - movements[i - 1].time;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    const speed = distance / dt;
-                    if (Math.abs(speed - averageSpeed) > averageSpeed * 0.5) {
-                        deviations++;
-                    }
-                }
-                return deviations > (movements.length * 0.3);
-            }
+    const averageSpeed = calculateSpeed(movements);
+    let deviations = 0;
+    for (let i = 1; i < movements.length; i++) {
+      const dx = movements[i].x - movements[i - 1].x;
+      const dy = movements[i].y - movements[i - 1].y;
+      const dt = movements[i].time - movements[i - 1].time;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const speed = distance / dt;
+      if (Math.abs(speed - averageSpeed) > averageSpeed * 0.5) {
+        deviations++;
+      }
+    }
+    return deviations > (movements.length * 0.3);
+  }
 
-            document.addEventListener('mousemove', recordMouseMovement);
+  document.addEventListener('mousemove', recordMouseMovement);
 
-            verifyCheckbox.addEventListener('change', () => {
-                if (verifyCheckbox.checked) {
-                    if (isTouchDevice) {
-                        setTimeout(() => {
-                            captchaContainer.classList.remove('failure');
-                            captchaContainer.classList.add('success');
-                            successIcon.style.display = 'inline-block';
-                            failureIcon.style.display = 'none';
-                            submitButton.disabled = false;
-                        }, 1000);
-                    } else {
-                        if (isValidMovement(mouseMovements)) {
-                            captchaContainer.classList.remove('failure');
-                            captchaContainer.classList.add('success');
-                            successIcon.style.display = 'inline-block';
-                            failureIcon.style.display = 'none';
-                            submitButton.disabled = false;
-                        } else {
-                            captchaContainer.classList.remove('success');
-                            captchaContainer.classList.add('failure');
-                            successIcon.style.display = 'none';
-                            failureIcon.style.display = 'inline-block';
-                            verifyCheckbox.checked = false;
-                        }
-                    }
-                    window.alert = function() {}; // Disable browser alert
-                } else {
-                    captchaContainer.classList.remove('success', 'failure');
-                    successIcon.style.display = 'none';
-                    failureIcon.style.display = 'none';
-                    submitButton.disabled = true;
-                }
-            });
-        });
+  verifyCheckbox.addEventListener('change', () => {
+    if (verifyCheckbox.checked) {
+      if (isTouchDevice) {
+        setTimeout(() => {
+          captchaContainer.classList.remove('failure');
+          captchaContainer.classList.add('success');
+          successIcon.style.display = 'inline-block';
+          failureIcon.style.display = 'none';
+          submitButton.disabled = false;
+        }, 1000);
+      } else {
+        if (isValidMovement(mouseMovements)) {
+          captchaContainer.classList.remove('failure');
+          captchaContainer.classList.add('success');
+          successIcon.style.display = 'inline-block';
+          failureIcon.style.display = 'none';
+          submitButton.disabled = false;
+          verifyCheckbox.style.display = 'none'; // Hide checkbox
+          verifyCheckbox.nextElementSibling.style.display = 'none'; // Hide "Verify" text
+        } else {
+          captchaContainer.classList.remove('success');
+          captchaContainer.classList.add('failure');
+          successIcon.style.display = 'none';
+          failureIcon.style.display = 'inline-block';
+          verifyCheckbox.checked = false; // Reset checkbox
+        }
+      }
+      window.alert = function() {}; // Disable browser alert
+    } else {
+      captchaContainer.classList.remove('success', 'failure');
+      successIcon.style.display = 'none';
+      failureIcon.style.display = 'none';
+      submitButton.disabled = true;
+      verifyCheckbox.style.display = 'inline-block'; // Show checkbox
+      verifyCheckbox.nextElementSibling.style.display = 'inline-block'; // Show "Verify" text
+    }
+  });
+});
     </script>
 </body>
 </html>
