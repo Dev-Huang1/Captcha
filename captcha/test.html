@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIR-Captcha Integration</title>
+    <style>
+        .captcha-container {
+            width: 300px;
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 50px auto;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: Arial, sans-serif;
+        }
+        .verify-section {
+            display: flex;
+            align-items: center;
+        }
+        .verify-checkbox {
+            margin-right: 10px;
+        }
+        .captcha-label {
+            margin-right: 20px;
+        }
+        .brand {
+            font-weight: bold;
+        }
+        .success, .failure {
+            display: none;
+        }
+        #success-icon, #failure-icon {
+            width: 35px;
+            height: 35px;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="captcha-container" id="captcha-container">
+        <div class="verify-section">
+            <input type="checkbox" id="verify-checkbox" class="verify-checkbox">
+            <label for="verify-checkbox" class="captcha-label">Verify</label>
+            <img src="check-mark.svg" alt="Check Mark" id="success-icon">
+            <img src="cross-mark.svg" alt="Cross Mark" id="failure-icon">
+        </div>
+        <div class="brand">AIR-Captcha</div>
+    </div>
+
+    <button id="submit" disabled>Submit</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const captchaContainer = document.getElementById('captcha-container');
+            const verifyCheckbox = document.getElementById('verify-checkbox');
+            const submitButton = document.getElementById('submit');
+            const successIcon = document.getElementById('success-icon');
+            const failureIcon = document.getElementById('failure-icon');
+            let mouseMovements = [];
+            let isTouchDevice = 'ontouchstart' in document.documentElement;
+
+            function recordMouseMovement(event) {
+                const position = { x: event.clientX, y: event.clientY, time: Date.now() };
+                mouseMovements.push(position);
+            }
+
+            function calculateSpeed(movements) {
+                let totalSpeed = 0;
+                for (let i = 1; i < movements.length; i++) {
+                    const dx = movements[i].x - movements[i - 1].x;
+                    const dy = movements[i].y - movements[i - 1].y;
+                    const dt = movements[i].time - movements[i - 1].time;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const speed = distance / dt;
+                    totalSpeed += speed;
+                }
+                return totalSpeed / (movements.length - 1);
+            }
+
+            function isValidMovement(movements) {
+                if (movements.length < 5) return false;
+
+                const averageSpeed = calculateSpeed(movements);
+                let deviations = 0;
+                for (let i = 1; i < movements.length; i++) {
+                    const dx = movements[i].x - movements[i - 1].x;
+                    const dy = movements[i].y - movements[i - 1].y;
+                    const dt = movements[i].time - movements[i - 1].time;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const speed = distance / dt;
+                    if (Math.abs(speed - averageSpeed) > averageSpeed * 0.5) {
+                        deviations++;
+                    }
+                }
+                return deviations > (movements.length * 0.3);
+            }
+
+            document.addEventListener('mousemove', recordMouseMovement);
+
+            verifyCheckbox.addEventListener('change', () => {
+                if (verifyCheckbox.checked) {
+                    if (isTouchDevice) {
+                        setTimeout(() => {
+                            captchaContainer.classList.remove('failure');
+                            captchaContainer.classList.add('success');
+                            successIcon.style.display = 'inline-block';
+                            failureIcon.style.display = 'none';
+                            submitButton.disabled = false;
+                        }, 1000);
+                    } else {
+                        if (isValidMovement(mouseMovements)) {
+                            captchaContainer.classList.remove('failure');
+                            captchaContainer.classList.add('success');
+                            successIcon.style.display = 'inline-block';
+                            failureIcon.style.display = 'none';
+                            submitButton.disabled = false;
+                        } else {
+                            captchaContainer.classList.remove('success');
+                            captchaContainer.classList.add('failure');
+                            successIcon.style.display = 'none';
+                            failureIcon.style.display = 'inline-block';
+                            verifyCheckbox.checked = false;
+                        }
+                    }
+                    window.alert = function() {}; // Disable browser alert
+                } else {
+                    captchaContainer.classList.remove('success', 'failure');
+                    successIcon.style.display = 'none';
+                    failureIcon.style.display = 'none';
+                    submitButton.disabled = true;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
