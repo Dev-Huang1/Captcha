@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Air - Captcha Demo</title>
+    <title>AIR-Captcha Demo</title>
     <style>
         .captcha-container {
             width: 300px;
@@ -40,9 +40,19 @@
             font-size: 18px;
             margin-left: 5px;
         }
+        .failure {
+            color: red;
+        }
+        .failure .verify-checkbox::after {
+            content: '\\2718'; /* Unicode character for cross mark */
+            display: inline-block;
+            font-size: 18px;
+            margin-left: 5px;
+        }
     </style>
 </head>
 <body>
+    <h2>AIR - Captcha Demo</h2>
     <div class="captcha-container" id="captcha-container">
         <div class="verify-section">
             <input type="checkbox" id="verify-checkbox" class="verify-checkbox">
@@ -55,8 +65,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const verifyCheckbox = document.getElementById('verify-checkbox');
             const captchaContainer = document.getElementById('captcha-container');
+            const verifyCheckbox = document.getElementById('verify-checkbox');
             const submitButton = document.getElementById('submit');
             let mouseMovements = [];
             let isTouchDevice = 'ontouchstart' in document.documentElement;
@@ -103,20 +113,25 @@
                 if (verifyCheckbox.checked) {
                     if (isTouchDevice) {
                         setTimeout(() => {
-                            alert('Verification Passed (Touch Device)');
+                            captchaContainer.classList.remove('failure');
                             captchaContainer.classList.add('success');
                             submitButton.disabled = false;
                         }, 1000);
                     } else {
                         if (isValidMovement(mouseMovements)) {
-                            alert('Verification Passed');
+                            captchaContainer.classList.remove('failure');
                             captchaContainer.classList.add('success');
                             submitButton.disabled = false;
                         } else {
-                            alert('Verification Failed');
+                            captchaContainer.classList.remove('success');
+                            captchaContainer.classList.add('failure');
                             verifyCheckbox.checked = false;
                         }
                     }
+                    window.alert = function() {}; // Disable browser alert
+                } else {
+                    captchaContainer.classList.remove('success', 'failure');
+                    submitButton.disabled = true;
                 }
             });
         });
