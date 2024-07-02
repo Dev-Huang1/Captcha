@@ -31,17 +31,18 @@
             margin-right: 20px;
         }
         #brand {
-            font-weight: bold;
-            font-size: 13px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        #brand img {
-            width: 25px; /* Adjust the size of the logo as needed */
-            text-align: right;
-            margin-bottom: 5px; /* Adjust the space between the logo and the text */
-        }
+    font-weight: bold;
+    font-size: 13px;
+    display: flex;
+    flex-direction: row-reverse; /* 调整为row-reverse */
+    align-items: center;
+    justify-content: flex-end; /* 右对齐 */
+}
+
+#brand img {
+    width: 25px; /* 调整logo大小 */
+    margin-left: 5px; /* 调整logo与文字的间距 */
+}
         #success-icon, #failure-icon {
             width: 35px;
             height: 35px;
