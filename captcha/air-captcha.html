@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIRcaptcha Example</title>
+</head>
+<body>
+    <h1>AIRcaptcha Example</h1>
+    <button id="start">Start Verification</button>
+    <p id="status"></p>
+
+    <script>
+        let userId = null;
+        let startTime = null;
+        let mouseMovements = 0;
+        let clicks = 0;
+
+        document.getElementById('start').addEventListener('click', async () => {
+            // 获取用户ID
+            const response = await fetch('http://localhost:3000/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+            userId = data.userId;
+            startTime = Date.now();
+            document.getElementById('status').innerText = 'Verification started. Please interact with the page.';
+        });
+
+        // 监听用户行为
+        document.addEventListener('mousemove', () => {
+            mouseMovements++;
+        });
+
+        document.addEventListener('click', () => {
+            clicks++;
+        });
+
+        // 假设10秒后发送验证数据
+        setInterval(async () => {
+            if (userId) {
+                const timeSpent = (Date.now() - startTime) / 1000;
+
+                const behaviorData = {
+                    timeSpent,
+                    mouseMovements,
+                    clicks
+                };
+
+                // 发送用户行为数据进行验证
+                const response = await fetch('http://localhost:3000/verify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId, behaviorData })
+                });
+
+                const result = await response.json();
+
+                if (result.isHuman) {
+                    document.getElementById('status').innerText = 'Human verification passed!';
+                } else {
+                    document.getElementById('status').innerText = 'Verification failed. Please interact more with the page.';
+                }
+            }
+        }, 10000); // 每10秒发送一次数据
+    </script>
+</body>
+</html>
