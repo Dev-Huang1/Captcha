@@ -37,18 +37,27 @@
             height: 35px;
             margin-left: 5px;
         }
+        #verification-text {
+            margin-left: 10px;
+            color: green;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
+    <h2>AIR - Captcha Demo</h2>
     <div id="captcha-container">
         <div id="verify-section">
             <input type="checkbox" id="verify-checkbox">
             <label for="verify-checkbox" id="captcha-label">I'm not a robot.</label>
-            <img id="check-mark" src="https://test.xyehr.cn/css/check-mark.svg" style="display: none; width: 25px; height: 25px;">
+            <img id="check-mark" src="/css/check-mark.svg" style="display: none;width: 25px; height: 25px;">
+            <span id="verification-text" style="display: none;">Verification successful</span>
             <p id="error-message" style="color: red; display: none;">Please re-verify</p>
         </div>
         <div id="brand">AIR-Captcha</div>
     </div>
+    <button id="submit-button" disabled>Submit</button>
+    
 
     <noscript>
         <style>
@@ -71,6 +80,7 @@
             const verifyCheckbox = document.getElementById('verify-checkbox');
             const captchaLabel = document.getElementById('captcha-label');
             const checkMark = document.getElementById('check-mark');
+            const verificationText = document.getElementById('verification-text');
             const errorMessage = document.getElementById('error-message');
             const submitButton = document.getElementById('submit-button');
             let mouseMovements = [];
@@ -121,6 +131,7 @@
                             captchaLabel.style.display = 'none';
                             verifyCheckbox.style.display = 'none';
                             checkMark.style.display = 'block';
+                            verificationText.style.display = 'block';
                             submitButton.disabled = false;
                         }, 1000);
                     } else {
@@ -128,6 +139,7 @@
                             captchaLabel.style.display = 'none';
                             verifyCheckbox.style.display = 'none';
                             checkMark.style.display = 'block';
+                            verificationText.style.display = 'block';
                             submitButton.disabled = false;
                         } else {
                             errorMessage.style.display = 'block';
