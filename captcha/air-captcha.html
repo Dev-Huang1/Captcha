@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIR-Captcha Demo</title>
+    <title>AIR-Captcha Integration</title>
     <style>
         .captcha-container {
             width: 300px;
@@ -31,32 +31,23 @@
         .brand {
             font-weight: bold;
         }
-        .success {
-            color: green;
+        .success, .failure {
+            display: none;
         }
-        .success .verify-checkbox::after {
-            content: '\\2714'; /* Unicode character for checkmark */
-            display: inline-block;
-            font-size: 18px;
-            margin-left: 5px;
-        }
-        .failure {
-            color: red;
-        }
-        .failure .verify-checkbox::after {
-            content: '\\2718'; /* Unicode character for cross mark */
-            display: inline-block;
-            font-size: 18px;
+        #success-icon, #failure-icon {
+            width: 35px;
+            height: 35px;
             margin-left: 5px;
         }
     </style>
 </head>
 <body>
-    <h2>AIR - Captcha Demo</h2>
     <div class="captcha-container" id="captcha-container">
         <div class="verify-section">
             <input type="checkbox" id="verify-checkbox" class="verify-checkbox">
             <label for="verify-checkbox" class="captcha-label">Verify</label>
+            <img src="/css/check-mark.svg" alt="Check Mark" id="success-icon">
+            <img src="/css/cross-mark.svg" alt="Cross Mark" id="failure-icon">
         </div>
         <div class="brand">AIR-Captcha</div>
     </div>
@@ -68,6 +59,8 @@
             const captchaContainer = document.getElementById('captcha-container');
             const verifyCheckbox = document.getElementById('verify-checkbox');
             const submitButton = document.getElementById('submit');
+            const successIcon = document.getElementById('success-icon');
+            const failureIcon = document.getElementById('failure-icon');
             let mouseMovements = [];
             let isTouchDevice = 'ontouchstart' in document.documentElement;
 
@@ -115,22 +108,30 @@
                         setTimeout(() => {
                             captchaContainer.classList.remove('failure');
                             captchaContainer.classList.add('success');
+                            successIcon.style.display = 'inline-block';
+                            failureIcon.style.display = 'none';
                             submitButton.disabled = false;
                         }, 1000);
                     } else {
                         if (isValidMovement(mouseMovements)) {
                             captchaContainer.classList.remove('failure');
                             captchaContainer.classList.add('success');
+                            successIcon.style.display = 'inline-block';
+                            failureIcon.style.display = 'none';
                             submitButton.disabled = false;
                         } else {
                             captchaContainer.classList.remove('success');
                             captchaContainer.classList.add('failure');
+                            successIcon.style.display = 'none';
+                            failureIcon.style.display = 'inline-block';
                             verifyCheckbox.checked = false;
                         }
                     }
                     window.alert = function() {}; // Disable browser alert
                 } else {
                     captchaContainer.classList.remove('success', 'failure');
+                    successIcon.style.display = 'none';
+                    failureIcon.style.display = 'none';
                     submitButton.disabled = true;
                 }
             });
