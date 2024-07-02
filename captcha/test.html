@@ -41,7 +41,7 @@
             margin-left: 10px;
             color: green;
             font-weight: bold;
-            font-size: 14px; /* 修改字体大小 */
+            font-size: 14px;
         }
         #loading-text {
             display: none;
@@ -92,6 +92,38 @@
             const loadingText = document.getElementById('loading-text');
             let mouseMovements = [];
             let isTouchDevice = 'ontouchstart' in document.documentElement;
+
+            const translations = {
+                en: {
+                    captchaLabel: "I'm not a robot.",
+                    verifyingText: "Verifying...",
+                    verificationSuccess: "Verification successful",
+                    verificationError: "Please re-verify"
+                },
+                zh: {
+                    captchaLabel: "我不是机器人。",
+                    verifyingText: "验证中...",
+                    verificationSuccess: "验证成功",
+                    verificationError: "请重新验证"
+                }
+                // 你可以在这里添加更多语言
+            };
+
+            function detectLanguage() {
+                const userLang = navigator.language || navigator.userLanguage;
+                return userLang.startsWith('zh') ? 'zh' : 'en'; // 默认返回 'en'，可以根据需要修改
+            }
+
+            function setLanguage(lang) {
+                const translation = translations[lang];
+                captchaLabel.textContent = translation.captchaLabel;
+                loadingText.textContent = translation.verifyingText;
+                verificationText.textContent = translation.verificationSuccess;
+                errorMessage.textContent = translation.verificationError;
+            }
+
+            const userLang = detectLanguage();
+            setLanguage(userLang);
 
             function recordMouseMovement(event) {
                 const position = { x: event.clientX, y: event.clientY, time: Date.now() };
