@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIR-Captcha Integration</title>
+    <title>Mouse Movement CAPTCHA</title>
     <style>
-        .captcha-container {
+        #captcha-container {
             width: 300px;
             border: 1px solid #ccc;
             padding: 20px;
@@ -16,57 +16,34 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-family: Arial, sans-serif;
         }
-        .verify-section {
+        #verify-section {
             display: flex;
             align-items: center;
         }
-        .verify-checkbox {
+        #verify-checkbox {
             margin-right: 10px;
         }
-        .captcha-label {
+        #captcha-label {
             margin-right: 20px;
         }
-        .brand {
+        #brand {
             font-weight: bold;
-        }
-        .success {
-            color: green;
-        }
-        .success .verify-checkbox::after {
-            content: '\\2714'; /* Unicode character for checkmark */
-            display: inline-block;
-            font-size: 18px;
-            margin-left: 5px;
-        }
-        .failure {
-            color: red;
-        }
-        .failure .verify-checkbox::after {
-            content: '\\2718'; /* Unicode character for cross mark */
-            display: inline-block;
-            font-size: 18px;
-            margin-left: 5px;
         }
     </style>
 </head>
 <body>
-    <div class="captcha-container" id="captcha-container">
-        <div class="verify-section">
-            <input type="checkbox" id="verify-checkbox" class="verify-checkbox">
-            <label for="verify-checkbox" class="captcha-label">Verify</label>
+    <div id="captcha-container">
+        <div id="verify-section">
+            <input type="checkbox" id="verify-checkbox">
+            <label for="verify-checkbox" id="captcha-label">Verify</label>
         </div>
-        <div class="brand">AIR-Captcha</div>
+        <div id="brand">AIR-Captcha</div>
     </div>
 
-    <button id="submit" disabled>Submit</button>
-
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const captchaContainer = document.getElementById('captcha-container');
+        (function() {
             const verifyCheckbox = document.getElementById('verify-checkbox');
-            const submitButton = document.getElementById('submit');
             let mouseMovements = [];
             let isTouchDevice = 'ontouchstart' in document.documentElement;
 
@@ -112,28 +89,19 @@
                 if (verifyCheckbox.checked) {
                     if (isTouchDevice) {
                         setTimeout(() => {
-                            captchaContainer.classList.remove('failure');
-                            captchaContainer.classList.add('success');
-                            submitButton.disabled = false;
+                            alert('Verification Passed (Touch Device)');
                         }, 1000);
                     } else {
                         if (isValidMovement(mouseMovements)) {
-                            captchaContainer.classList.remove('failure');
-                            captchaContainer.classList.add('success');
-                            submitButton.disabled = false;
+                            alert('Verification Passed');
                         } else {
-                            captchaContainer.classList.remove('success');
-                            captchaContainer.classList.add('failure');
+                            alert('Verification Failed');
                             verifyCheckbox.checked = false;
                         }
                     }
-                    window.alert = function() {}; // Disable browser alert
-                } else {
-                    captchaContainer.classList.remove('success', 'failure');
-                    submitButton.disabled = true;
                 }
             });
-        });
+        })();
     </script>
 </body>
 </html>
