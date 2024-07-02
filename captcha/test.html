@@ -34,14 +34,17 @@
     font-weight: bold;
     font-size: 13px;
     display: flex;
-    flex-direction: row-reverse; /* 调整为row-reverse */
-    align-items: center;
-    justify-content: flex-end; /* 右对齐 */
+    flex-direction: column;
+    align-items: flex-end; /* 右对齐 */
+    position: relative;
 }
 
 #brand img {
     width: 25px; /* 调整logo大小 */
-    margin-left: 5px; /* 调整logo与文字的间距 */
+    margin-bottom: 5px; /* 调整logo与文字的间距 */
+    position: absolute;
+    right: 0; /* 靠右对齐 */
+    top: -30px; /* 调整这个值使其靠近文字 */
 }
         #success-icon, #failure-icon {
             width: 35px;
@@ -57,7 +60,7 @@
         #loading-text {
             display: none;
             margin-right: 20px;
-            font-weight: bold;
+            font-size: 16px;
         }
     </style>
 </head>
