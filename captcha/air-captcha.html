@@ -37,6 +37,7 @@
         <div id="verify-section">
             <input type="checkbox" id="verify-checkbox">
             <label for="verify-checkbox" id="captcha-label">Verify</label>
+            <p id="error-message" style="color: red; display: none;">Please re-verify</p>
         </div>
         <div id="brand">AIR-Captcha</div>
     </div>
@@ -44,6 +45,8 @@
     <script>
         (function() {
             const verifyCheckbox = document.getElementById('verify-checkbox');
+            const captchaLabel = document.getElementById('captcha-label');
+            const errorMessage = document.getElementById('error-message');
             let mouseMovements = [];
             let isTouchDevice = 'ontouchstart' in document.documentElement;
 
@@ -89,13 +92,15 @@
                 if (verifyCheckbox.checked) {
                     if (isTouchDevice) {
                         setTimeout(() => {
-                            alert('Verification Passed (Touch Device)');
+                            captchaLabel.style.display = 'none';
+                            verifyCheckbox.style.display = 'none';
                         }, 1000);
                     } else {
                         if (isValidMovement(mouseMovements)) {
-                            alert('Verification Passed');
+                            captchaLabel.style.display = 'none';
+                            verifyCheckbox.style.display = 'none';
                         } else {
-                            alert('Verification Failed');
+                            errorMessage.style.display = 'block';
                             verifyCheckbox.checked = false;
                         }
                     }
