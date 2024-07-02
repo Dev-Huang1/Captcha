@@ -67,111 +67,94 @@
     </noscript>
 
     <script>
-    (function() {
-        const verifyCheckbox = document.getElementById('verify-checkbox');
-        const captchaLabel = document.getElementById('captcha-label');
-        const checkMark = document.getElementById('check-mark');
-        const errorMessage = document.getElementById('error-message');
-        const submitButton = document.getElementById('submit-button');
-        
-        let mouseMovements = [];
-        let keyPresses = [];
-        let scrollEvents = [];
-        let touchEvents = [];
-        let lastActivityTime = Date.now();
-        let isTouchDevice = 'ontouchstart' in document.documentElement;
-        let pageLoadTime = Date.now();
+(function() {
+    const verifyCheckbox = document.getElementById('verify-checkbox');
+    const captchaLabel = document.getElementById('captcha-label');
+    const checkMark = document.getElementById('check-mark');
+    const errorMessage = document.getElementById('error-message');
+    const submitButton = document.getElementById('submit-button');
+    
+    let touchEvents = [];
+    let scrollEvents = [];
+    let orientationEvents = [];
+    let pageLoadTime = Date.now();
 
-        function recordMouseMovement(event) {
-            mouseMovements.push({ x: event.clientX, y: event.clientY, time: Date.now() });
-            updateLastActivityTime();
-        }
-
-        function recordKeyPress(event) {
-            keyPresses.push({ key: event.key, time: Date.now() });
-            updateLastActivityTime();
-        }
-
-        function recordScrollEvent() {
-            scrollEvents.push({ scrollTop: window.scrollY, time: Date.now() });
-            updateLastActivityTime();
-        }
-
-        function recordTouchEvent(event) {
-            touchEvents.push({ 
-                touches: Array.from(event.touches).map(t => ({ x: t.clientX, y: t.clientY })),
-                time: Date.now()
-            });
-            updateLastActivityTime();
-        }
-
-        function updateLastActivityTime() {
-            lastActivityTime = Date.now();
-        }
-
-        function calculateEntropy(arr) {
-            const counts = {};
-            arr.forEach(item => {
-                counts[item] = (counts[item] || 0) + 1;
-            });
-            return Object.values(counts).reduce((entropy, count) => {
-                const p = count / arr.length;
-                return entropy - p * Math.log2(p);
-            }, 0);
-        }
-
-        function isHumanLike() {
-            const timeSincePageLoad = Date.now() - pageLoadTime;
-            const activityInterval = Date.now() - lastActivityTime;
-
-            // 检查是否有足够的鼠标移动
-            if (mouseMovements.length < 10) return false;
-
-            // 检查鼠标移动的熵
-            const mouseXEntropy = calculateEntropy(mouseMovements.map(m => m.x));
-            const mouseYEntropy = calculateEntropy(mouseMovements.map(m => m.y));
-            if (mouseXEntropy < 2 || mouseYEntropy < 2) return false;
-
-            // 检查按键的多样性
-            if (keyPresses.length > 0 && calculateEntropy(keyPresses.map(k => k.key)) < 1.5) return false;
-
-            // 检查滚动行为
-            if (scrollEvents.length > 0 && calculateEntropy(scrollEvents.map(s => s.scrollTop)) < 1) return false;
-
-            // 检查触摸事件（如果是触摸设备）
-            if (isTouchDevice && touchEvents.length < 5) return false;
-
-            // 检查验证时间是否合理
-            if (timeSincePageLoad < 1000 || timeSincePageLoad > 300000) return false;
-
-            // 检查最后活动时间
-            if (activityInterval > 60000) return false;
-
-            return true;
-        }
-
-        document.addEventListener('mousemove', recordMouseMovement);
-        document.addEventListener('keydown', recordKeyPress);
-        window.addEventListener('scroll', recordScrollEvent);
-        if (isTouchDevice) {
-            document.addEventListener('touchstart', recordTouchEvent);
-            document.addEventListener('touchmove', recordTouchEvent);
-        }
-
-        verifyCheckbox.addEventListener('change', () => {
-            if (verifyCheckbox.checked) {
-                if (isHumanLike()) {
-                    captchaLabel.style.display = 'none';
-                    verifyCheckbox.style.display = 'none';
-                    checkMark.style.display = 'block';
-                    if (submitButton) submitButton.disabled = false;
-                } else {
-                    errorMessage.style.display = 'block';
-                    verifyCheckbox.checked = false;
-                }
-            }
+    function recordTouchEvent(event) {
+        touchEvents.push({ 
+            type: event.type,
+            touches: Array.from(event.touches).map(t => ({ x: t.clientX, y: t.clientY })),
+            time: Date.now()
         });
-    })();
+    }
+
+    function recordScrollEvent() {
+        scrollEvents.push({ scrollTop: window.scrollY, time: Date.now() });
+    }
+
+    function recordOrientationEvent(event) {
+        orientationEvents.push({
+            alpha: event.alpha,
+            beta: event.beta,
+            gamma: event.gamma,
+            time: Date.now()
+        });
+    }
+
+    function isHumanLike() {
+        const timeSincePageLoad = Date.now() - pageLoadTime;
+
+        // 检查是否有足够的触摸事件
+        if (touchEvents.length < 3) return false;
+
+        // 检查触摸事件的多样性
+        const touchTypes = new Set(touchEvents.map(e => e.type));
+        if (touchTypes.size < 2) return false;  // 应至少有touchstart和touchmove
+
+        // 检查滚动行为
+        if (scrollEvents.length > 0) {
+            const scrollDistances = scrollEvents.map((e, i, arr) => 
+                i > 0 ? Math.abs(e.scrollTop - arr[i-1].scrollTop) : 0
+            ).filter(d => d > 0);
+            if (scrollDistances.length < 2) return false;  // 至少应该有两次不同的滚动
+        }
+
+        // 检查设备方向变化（如果有）
+        if (orientationEvents.length > 1) {
+            const orientationChanges = orientationEvents.map((e, i, arr) => 
+                i > 0 ? Math.abs(e.beta - arr[i-1].beta) + Math.abs(e.gamma - arr[i-1].gamma) : 0
+            ).filter(change => change > 5);  // 忽略微小变化
+            if (orientationChanges.length === 0) return false;  // 应该有一些明显的方向变化
+        }
+
+        // 检查验证时间是否合理
+        if (timeSincePageLoad < 1000 || timeSincePageLoad > 300000) return false;
+
+        return true;
+    }
+
+    document.addEventListener('touchstart', recordTouchEvent, { passive: true });
+    document.addEventListener('touchmove', recordTouchEvent, { passive: true });
+    document.addEventListener('touchend', recordTouchEvent, { passive: true });
+    window.addEventListener('scroll', recordScrollEvent, { passive: true });
+    window.addEventListener('deviceorientation', recordOrientationEvent, { passive: true });
+
+    verifyCheckbox.addEventListener('change', () => {
+        if (verifyCheckbox.checked) {
+            if (isHumanLike()) {
+                captchaLabel.style.display = 'none';
+                verifyCheckbox.style.display = 'none';
+                checkMark.style.display = 'block';
+                if (submitButton) submitButton.disabled = false;
+            } else {
+                errorMessage.style.display = 'block';
+                verifyCheckbox.checked = false;
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 3000);
+            }
+        }
+    });
+})();
     </script>
 </body>
 </html>
