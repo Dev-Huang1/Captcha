@@ -27,6 +27,15 @@
             .brand {
                 font-weight: bold;
             }
+            .success {
+                color: green;
+            }
+            .success .verify-checkbox::after {
+                content: '\\2714'; /* Unicode character for checkmark */
+                display: inline-block;
+                font-size: 18px;
+                margin-left: 5px;
+            }
         </style>
         <div class="captcha-container">
             <div class="verify-section">
@@ -41,6 +50,7 @@
         targetElement.innerHTML = captchaHtml;
 
         const verifyCheckbox = targetElement.querySelector('.verify-checkbox');
+        const captchaContainer = targetElement.querySelector('.captcha-container');
         let mouseMovements = [];
         let isTouchDevice = 'ontouchstart' in document.documentElement;
 
@@ -87,10 +97,12 @@
                 if (isTouchDevice) {
                     setTimeout(() => {
                         alert('Verification Passed (Touch Device)');
+                        captchaContainer.classList.add('success');
                     }, 1000);
                 } else {
                     if (isValidMovement(mouseMovements)) {
                         alert('Verification Passed');
+                        captchaContainer.classList.add('success');
                     } else {
                         alert('Verification Failed');
                         verifyCheckbox.checked = false;
