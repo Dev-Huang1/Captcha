@@ -13,25 +13,37 @@
             text-align: center;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        #verify-btn {
-            display: block;
-            margin: 20px auto;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
+        #verify-section {
+            display: flex;
+            align-items: center;
+        }
+        #verify-checkbox {
+            margin-right: 10px;
+        }
+        #captcha-label {
+            margin-right: 20px;
+        }
+        #brand {
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <div id="captcha-container">
-        <h3>Please verify you are human</h3>
-        <button id="verify-btn">Verify</button>
+        <div id="verify-section">
+            <input type="checkbox" id="verify-checkbox">
+            <label for="verify-checkbox" id="captcha-label">Verify</label>
+        </div>
+        <div id="brand">AIR-Captcha</div>
     </div>
 
     <script>
         (function() {
-            const verifyBtn = document.getElementById('verify-btn');
+            const verifyCheckbox = document.getElementById('verify-checkbox');
             let mouseMovements = [];
             let isTouchDevice = 'ontouchstart' in document.documentElement;
 
@@ -73,16 +85,19 @@
 
             document.addEventListener('mousemove', recordMouseMovement);
 
-            verifyBtn.addEventListener('click', () => {
-                if (isTouchDevice) {
-                    setTimeout(() => {
-                        alert('Verification Passed (Touch Device)');
-                    }, 1000);
-                } else {
-                    if (isValidMovement(mouseMovements)) {
-                        alert('Verification Passed');
+            verifyCheckbox.addEventListener('change', () => {
+                if (verifyCheckbox.checked) {
+                    if (isTouchDevice) {
+                        setTimeout(() => {
+                            alert('Verification Passed (Touch Device)');
+                        }, 1000);
                     } else {
-                        alert('Verification Failed');
+                        if (isValidMovement(mouseMovements)) {
+                            alert('Verification Passed');
+                        } else {
+                            alert('Verification Failed');
+                            verifyCheckbox.checked = false;
+                        }
                     }
                 }
             });
