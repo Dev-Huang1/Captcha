@@ -42,6 +42,11 @@
             color: green;
             font-weight: bold;
         }
+        #loading-text {
+            display: none;
+            margin-right: 20px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -50,7 +55,8 @@
         <div id="verify-section">
             <input type="checkbox" id="verify-checkbox">
             <label for="verify-checkbox" id="captcha-label">I'm not a robot.</label>
-            <img id="check-mark" src="/css/check-mark.svg" style="display: none;width: 25px; height: 25px;">
+            <span id="loading-text">Verifying...</span>
+            <img id="check-mark" src="/css/check-mark.svg" style="display: none; width: 25px; height: 25px;">
             <p id="verification-text" style="display: none; padding: 2px;">Verification successful</p>
             <p id="error-message" style="color: red; display: none;">Please re-verify</p>
         </div>
@@ -58,7 +64,6 @@
     </div>
     <button id="submit-button" disabled>Submit</button>
     
-
     <noscript>
         <style>
             #captcha-label, #verify-checkbox {
@@ -83,6 +88,7 @@
             const verificationText = document.getElementById('verification-text');
             const errorMessage = document.getElementById('error-message');
             const submitButton = document.getElementById('submit-button');
+            const loadingText = document.getElementById('loading-text');
             let mouseMovements = [];
             let isTouchDevice = 'ontouchstart' in document.documentElement;
 
@@ -126,22 +132,25 @@
 
             verifyCheckbox.addEventListener('change', () => {
                 if (verifyCheckbox.checked) {
+                    captchaLabel.style.display = 'none';
+                    verifyCheckbox.style.display = 'none';
+                    loadingText.style.display = 'block';
+                    
                     if (isTouchDevice) {
                         setTimeout(() => {
-                            captchaLabel.style.display = 'none';
-                            verifyCheckbox.style.display = 'none';
+                            loadingText.style.display = 'none';
                             checkMark.style.display = 'block';
                             verificationText.style.display = 'block';
                             submitButton.disabled = false;
                         }, 1000);
                     } else {
                         if (isValidMovement(mouseMovements)) {
-                            captchaLabel.style.display = 'none';
-                            verifyCheckbox.style.display = 'none';
+                            loadingText.style.display = 'none';
                             checkMark.style.display = 'block';
                             verificationText.style.display = 'block';
                             submitButton.disabled = false;
                         } else {
+                            loadingText.style.display = 'none';
                             errorMessage.style.display = 'block';
                             verifyCheckbox.checked = false;
                         }
