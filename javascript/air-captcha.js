@@ -1,7 +1,7 @@
 (function() {
     const captchaHtml = `
         <style>
-            #captcha-container {
+            .captcha-container {
                 width: 300px;
                 border: 1px solid #ccc;
                 padding: 20px;
@@ -14,33 +14,33 @@
                 justify-content: space-between;
                 font-family: Arial, sans-serif;
             }
-            #verify-section {
+            .verify-section {
                 display: flex;
                 align-items: center;
             }
-            #verify-checkbox {
+            .verify-checkbox {
                 margin-right: 10px;
             }
-            #captcha-label {
+            .captcha-label {
                 margin-right: 20px;
             }
-            #brand {
+            .brand {
                 font-weight: bold;
             }
         </style>
-        <div id="captcha-container">
-            <div id="verify-section">
+        <div class="captcha-container">
+            <div class="verify-section">
                 <input type="checkbox" id="verify-checkbox">
-                <label for="verify-checkbox" id="captcha-label">Verify</label>
+                <label for="verify-checkbox" class="captcha-label">Verify</label>
             </div>
-            <div id="brand">AIR-Captcha</div>
+            <div class="brand">AIR-Captcha</div>
         </div>
     `;
 
     function insertCaptcha(targetElement) {
         targetElement.innerHTML = captchaHtml;
 
-        const verifyCheckbox = document.getElementById('verify-checkbox');
+        const verifyCheckbox = targetElement.querySelector('.verify-checkbox');
         let mouseMovements = [];
         let isTouchDevice = 'ontouchstart' in document.documentElement;
 
@@ -100,7 +100,7 @@
         });
     }
 
-    window.addEventListener('load', () => {
+    document.addEventListener('DOMContentLoaded', () => {
         const captchaElements = document.querySelectorAll('.air-captcha');
         captchaElements.forEach(element => {
             insertCaptcha(element);
