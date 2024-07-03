@@ -164,7 +164,6 @@
     function isHumanLikeMovement(movements) {
         if (movements.length < 10) return false;
 
-        // 检查移动的不规则性
         let irregularMovements = 0;
         for (let i = 2; i < movements.length; i++) {
             const prevVector = {
@@ -176,13 +175,11 @@
                 y: movements[i].y - movements[i-1].y
             };
             
-            // 如果方向发生显著变化，增加不规则计数
             if (Math.abs(prevVector.x - currentVector.x) > 5 || Math.abs(prevVector.y - currentVector.y) > 5) {
                 irregularMovements++;
             }
         }
 
-        // 检查速度变化
         let speedChanges = 0;
         for (let i = 1; i < movements.length - 1; i++) {
             const prevSpeed = Math.sqrt(Math.pow(movements[i].x - movements[i-1].x, 2) + Math.pow(movements[i].y - movements[i-1].y, 2)) / (movements[i].time - movements[i-1].time);
@@ -193,8 +190,42 @@
             }
         }
 
-        // 人类般的移动应该有一定程度的不规则性和速度变化
         return irregularMovements > movements.length * 0.2 && speedChanges > movements.length * 0.15;
+    }
+
+    function simulateIPCleanlinessCheck() {
+        let score = 1.0;
+
+        if (navigator.webdriver) {
+            score -= 0.2;
+        }
+
+        if (screen.width < 800 || screen.height < 600) {
+            score -= 0.1;
+        }
+
+        if (!('ontouchstart' in window)) {
+            score -= 0.1;
+        }
+
+        if (navigator.getBattery) {
+            navigator.getBattery().then(function(battery) {
+                if (battery.charging && battery.chargingTime === 0) {
+                    score -= 0.1;
+                }
+            });
+        }
+
+        const offset = new Date().getTimezoneOffset();
+        if (offset === 0 || offset % 60 !== 0) {
+            score -= 0.1;
+        }
+
+        if (navigator.languages && navigator.languages.length === 0) {
+            score -= 0.1;
+        }
+
+        return new Promise(resolve => setTimeout(() => resolve(Math.max(score, 0)), 500));
     }
 
     document.addEventListener('mousemove', recordMouseMovement);
@@ -205,16 +236,18 @@
             verifyCheckbox.style.display = 'none';
             loadingText.style.display = 'block';
             
-            if (isHumanLikeMovement(mouseMovements)) {
-                loadingText.style.display = 'none';
-                checkMark.style.display = 'block';
-                verificationText.style.display = 'block';
-                submitButton.disabled = false;
-            } else {
-                loadingText.style.display = 'none';
-                errorMessage.style.display = 'block';
-                verifyCheckbox.checked = false;
-            }
+            simulateIPCleanlinessCheck().then(score => {
+                if (score > 0.8 && isHumanLikeMovement(mouseMovements)) {
+                    loadingText.style.display = 'none';
+                    checkMark.style.display = 'block';
+                    verificationText.style.display = 'block';
+                    submitButton.disabled = false;
+                } else {
+                    loadingText.style.display = 'none';
+                    errorMessage.style.display = 'block';
+                    verifyCheckbox.checked = false;
+                }
+            });
         }
     });
 })();
