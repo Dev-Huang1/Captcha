@@ -244,7 +244,7 @@
                 const num2 = Math.floor(Math.random() * 10);
                 const operator = Math.random() > 0.5 ? '+' : '-';
                 mathAnswer = operator === '+' ? num1 + num2 : num1 - num2;
-                mathCaptchaQuestion.textContent = `${num1} ${operator} ${num2} = mathCaptchaQuestion.textContent = `${num1} ${operator} ${num2} = ?`;
+                mathCaptchaQuestion.textContent = `${num1} ${operator} ${num2} = ?`;
             }
 
             function showMathCaptcha() {
@@ -261,6 +261,7 @@
                     checkMark.style.display = 'block';
                     verificationText.style.display = 'block';
                     submitButton.disabled = false;
+                    errorMessage.style.display = 'none';
                 } else {
                     mathCaptchaError.style.display = 'block';
                     generateMathCaptcha();
@@ -273,21 +274,25 @@
                 if (verifyCheckbox.checked) {
                     captchaLabel.style.display = 'none';
                     verifyCheckbox.style.display = 'none';
-                    loadingText.style.display = 'block';
-                    
                     if (isTouchDevice) {
                         showMathCaptcha();
                     } else {
-                        if (isValidMovement(mouseMovements)) {
-                            loadingText.style.display = 'none';
-                            checkMark.style.display = 'block';
-                            verificationText.style.display = 'block';
-                            submitButton.disabled = false;
-                        } else {
-                            loadingText.style.display = 'none';
-                            errorMessage.style.display = 'block';
-                            verifyCheckbox.checked = false;
-                        }
+                        loadingText.style.display = 'block';
+                        setTimeout(() => {
+                            if (isValidMovement(mouseMovements)) {
+                                loadingText.style.display = 'none';
+                                checkMark.style.display = 'block';
+                                verificationText.style.display = 'block';
+                                submitButton.disabled = false;
+                                errorMessage.style.display = 'none';
+                            } else {
+                                loadingText.style.display = 'none';
+                                errorMessage.style.display = 'block';
+                                verifyCheckbox.checked = false;
+                                captchaLabel.style.display = 'inline';
+                                verifyCheckbox.style.display = 'inline';
+                            }
+                        }, 2000);
                     }
                 }
             });
