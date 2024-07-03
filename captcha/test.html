@@ -116,84 +116,6 @@
                     
     <script>
         (function() {
-            const verifyCheckbox = document.getElementById('verify-checkbox');
-            const captchaLabel = document.getElementById('captcha-label');
-            const checkMark = document.getElementById('check-mark');
-            const verificationText = document.getElementById('verification-text');
-            const errorMessage = document.getElementById('error-message');
-            const submitButton = document.getElementById('submit-button');
-            const loadingText = document.getElementById('loading-text');
-            let mouseMovements = [];
-            let isTouchDevice = 'ontouchstart' in document.documentElement;
-
-            const translations = {
-                en: {
-                    captchaLabel: "I'm not a robot.",
-                    verifyingText: "Verifying...",
-                    verificationSuccess: "Verification successful",
-                    verificationError: "Please re-verify"
-                },
-                zh: {
-                    captchaLabel: "我不是机器人",
-                    verifyingText: "验证中...",
-                    verificationSuccess: "验证成功",
-                    verificationError: "请重新验证"
-                }
-                // 你可以在这里添加更多语言
-            };
-
-            function detectLanguage() {
-                const userLang = navigator.language || navigator.userLanguage;
-                return userLang.startsWith('zh') ? 'zh' : 'en'; // 默认返回 'en'，可以根据需要修改
-            }
-
-            function setLanguage(lang) {
-                const translation = translations[lang];
-                captchaLabel.textContent = translation.captchaLabel;
-                loadingText.textContent = translation.verifyingText;
-                verificationText.textContent = translation.verificationSuccess;
-                errorMessage.textContent = translation.verificationError;
-            }
-
-            const userLang = detectLanguage();
-            setLanguage(userLang);
-
-            function recordMouseMovement(event) {
-                const position = { x: event.clientX, y: event.clientY, time: Date.now() };
-                mouseMovements.push(position);
-            }
-
-            function calculateSpeed(movements) {
-                let totalSpeed = 0;
-                for (let i = 1; i < movements.length; i++) {
-                    const dx = movements[i].x - movements[i - 1].x;
-                    const dy = movements[i].y - movements[i - 1].y;
-                    const dt = movements[i].time - movements[i - 1].time;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    const speed = distance / dt;
-                    totalSpeed += speed;
-                }
-                return totalSpeed / (movements.length - 1);
-            }
-
-            function isValidMovement(movements) {
-                if (movements.length < 5) return false;
-
-                const averageSpeed = calculateSpeed(movements);
-                let deviations = 0;
-                for (let i = 1; i < movements.length; i++) {
-                    const dx = movements[i].x - movements[i - 1].x;
-                    const dy = movements[i].y - movements[i - 1].y;
-                    const dt = movements[i].time - movements[i - 1].time;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    const speed = distance / dt;
-                    if (Math.abs(speed - averageSpeed) > averageSpeed * 0.5) {
-                        deviations++;
-                    }
-                }
-                return deviations > (movements.length * 0.3);
-            }
-(function() {
     const verifyCheckbox = document.getElementById('verify-checkbox');
     const captchaLabel = document.getElementById('captcha-label');
     const checkMark = document.getElementById('check-mark');
@@ -239,35 +161,40 @@
         mouseMovements.push(position);
     }
 
-    function calculateSpeed(movements) {
-        let totalSpeed = 0;
-        for (let i = 1; i < movements.length; i++) {
-            const dx = movements[i].x - movements[i - 1].x;
-            const dy = movements[i].y - movements[i - 1].y;
-            const dt = movements[i].time - movements[i - 1].time;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            const speed = distance / dt;
-            totalSpeed += speed;
-        }
-        return totalSpeed / (movements.length - 1);
-    }
+    function isHumanLikeMovement(movements) {
+        if (movements.length < 10) return false;
 
-    function isValidMovement(movements) {
-        if (movements.length < 5) return false;
-
-        const averageSpeed = calculateSpeed(movements);
-        let deviations = 0;
-        for (let i = 1; i < movements.length; i++) {
-            const dx = movements[i].x - movements[i - 1].x;
-            const dy = movements[i].y - movements[i - 1].y;
-            const dt = movements[i].time - movements[i - 1].time;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            const speed = distance / dt;
-            if (Math.abs(speed - averageSpeed) > averageSpeed * 0.5) {
-                deviations++;
+        // 检查移动的不规则性
+        let irregularMovements = 0;
+        for (let i = 2; i < movements.length; i++) {
+            const prevVector = {
+                x: movements[i-1].x - movements[i-2].x,
+                y: movements[i-1].y - movements[i-2].y
+            };
+            const currentVector = {
+                x: movements[i].x - movements[i-1].x,
+                y: movements[i].y - movements[i-1].y
+            };
+            
+            // 如果方向发生显著变化，增加不规则计数
+            if (Math.abs(prevVector.x - currentVector.x) > 5 || Math.abs(prevVector.y - currentVector.y) > 5) {
+                irregularMovements++;
             }
         }
-        return deviations > (movements.length * 0.3);
+
+        // 检查速度变化
+        let speedChanges = 0;
+        for (let i = 1; i < movements.length - 1; i++) {
+            const prevSpeed = Math.sqrt(Math.pow(movements[i].x - movements[i-1].x, 2) + Math.pow(movements[i].y - movements[i-1].y, 2)) / (movements[i].time - movements[i-1].time);
+            const nextSpeed = Math.sqrt(Math.pow(movements[i+1].x - movements[i].x, 2) + Math.pow(movements[i+1].y - movements[i].y, 2)) / (movements[i+1].time - movements[i].time);
+            
+            if (Math.abs(prevSpeed - nextSpeed) > prevSpeed * 0.5) {
+                speedChanges++;
+            }
+        }
+
+        // 人类般的移动应该有一定程度的不规则性和速度变化
+        return irregularMovements > movements.length * 0.2 && speedChanges > movements.length * 0.15;
     }
 
     document.addEventListener('mousemove', recordMouseMovement);
@@ -278,7 +205,7 @@
             verifyCheckbox.style.display = 'none';
             loadingText.style.display = 'block';
             
-            if (isValidMovement(mouseMovements)) {
+            if (isHumanLikeMovement(mouseMovements)) {
                 loadingText.style.display = 'none';
                 checkMark.style.display = 'block';
                 verificationText.style.display = 'block';
