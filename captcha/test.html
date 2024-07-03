@@ -115,7 +115,7 @@
 
                     
     <script>
-        (function() {
+            (function() {
     const verifyCheckbox = document.getElementById('verify-checkbox');
     const captchaLabel = document.getElementById('captcha-label');
     const checkMark = document.getElementById('check-mark');
@@ -230,20 +230,18 @@
             loadingText.style.display = 'block';
             
             if (isTouchDevice) {
-                setTimeout(() => {
-                    const gyroVariance = calculateGyroVariance(gyroData);
-                    const validTouch = isValidMovement(touchMovements);
+                const gyroVariance = calculateGyroVariance(gyroData);
+                const validTouch = isValidMovement(touchMovements);
 
-                    loadingText.style.display = 'none';
-                    if (gyroVariance < 0.5 && validTouch) {
-                        checkMark.style.display = 'block';
-                        verificationText.style.display = 'block';
-                        submitButton.disabled = false;
-                    } else {
-                        errorMessage.style.display = 'block';
-                        verifyCheckbox.checked = false;
-                    }
-                }, 2000);
+                loadingText.style.display = 'none';
+                if (gyroVariance < 0.5 && validTouch) {
+                    checkMark.style.display = 'block';
+                    verificationText.style.display = 'block';
+                    submitButton.disabled = false;
+                } else {
+                    errorMessage.style.display = 'block';
+                    verifyCheckbox.checked = false;
+                }
             } else {
                 if (isValidMovement(mouseMovements)) {
                     loadingText.style.display = 'none';
