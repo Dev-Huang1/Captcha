@@ -142,20 +142,6 @@
         const userLang = detectLanguage();
         setLanguage(userLang);
 
-        let shakeDetected = false;
-        function handleMotionEvent(event) {
-            const acceleration = event.accelerationIncludingGravity;
-            const totalAcceleration = Math.sqrt(acceleration.x * acceleration.x + acceleration.y * acceleration.y + acceleration.z * acceleration.z);
-            if (totalAcceleration > 15) { // 根据需要调整阈值
-                shakeDetected = true;
-                window.removeEventListener('devicemotion', handleMotionEvent);
-            }
-        }
-
-        if (isTouchDevice) {
-            window.addEventListener('devicemotion', handleMotionEvent);
-        }
-
         verifyCheckbox.addEventListener('change', () => {
             if (verifyCheckbox.checked) {
                 captchaLabel.style.display = 'none';
@@ -165,23 +151,20 @@
                 if (isTouchDevice) {
                     setTimeout(() => {
                         loadingText.style.display = 'none';
-                        if (shakeDetected) {
-                            checkMark.style.display = 'block';
-                            verificationText.style.display = 'block';
-                            submitButton.disabled = false;
-                        } else {
-                            errorMessage.style.display = 'block';
-                            verifyCheckbox.checked = false;
-                        }
+                        checkMark.style.display = 'block';
+                        verificationText.style.display = 'block';
+                        submitButton.disabled = false;
                     }, 1000);
                 } else {
+                    // For non-touch devices, directly verify (can add any other logic if required)
                     loadingText.style.display = 'none';
-                    errorMessage.style.display = 'block';
-                    verifyCheckbox.checked = false;
+                    checkMark.style.display = 'block';
+                    verificationText.style.display = 'block';
+                    submitButton.disabled = false;
                 }
             }
         });
     })();
-    </script>
+</script>
 </body>
 </html>
