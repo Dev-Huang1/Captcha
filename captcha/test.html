@@ -53,13 +53,13 @@
         flex-direction: column;
         align-items: flex-end;
         position: relative;
-        margin-top: 22.5px;
+        margin-top: 23.5px;
     }
     #brand img {
         width: 35px;
         position: absolute;
         right: 0;
-        top: -31px;
+        top: -30px;
     }
     #success-icon, #failure-icon {
         width: 35px;
@@ -76,6 +76,40 @@
         display: none;
         margin-right: 20px;
         font-size: 16px;
+    }
+
+    /* Styles for the math captcha modal */
+    #math-captcha-modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 300px;
+        padding: 20px;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    #math-captcha-modal h3 {
+        margin-bottom: 10px;
+    }
+
+    #math-captcha-input {
+        margin-bottom: 10px;
+    }
+
+    #math-captcha-button {
+        margin-top: 10px;
+    }
+
+    #math-captcha-error {
+        color: red;
+        display: none;
     }
 </style>
 </head>
@@ -96,6 +130,14 @@
         </div>
     </div>
     <button id="submit-button" disabled>Submit</button>
+
+    <div id="math-captcha-modal">
+        <h3>Solve the Math Problem</h3>
+        <div id="math-captcha-question"></div>
+        <input type="text" id="math-captcha-input">
+        <button id="math-captcha-button">Verify</button>
+        <p id="math-captcha-error">Incorrect answer, please try again.</p>
+    </div>
     
     <noscript>
         <style>
@@ -113,150 +155,145 @@
         </script>
     </noscript>
 
-                    
     <script>
-            (function() {
-    const verifyCheckbox = document.getElementById('verify-checkbox');
-    const captchaLabel = document.getElementById('captcha-label');
-    const checkMark = document.getElementById('check-mark');
-    const verificationText = document.getElementById('verification-text');
-    const errorMessage = document.getElementById('error-message');
-    const submitButton = document.getElementById('submit-button');
-    const loadingText = document.getElementById('loading-text');
-    let mouseMovements = [];
-    let isTouchDevice = 'ontouchstart' in document.documentElement;
-    let gyroData = [];
-    let touchMovements = [];
-    
-    const translations = {
-        en: {
-            captchaLabel: "I'm not a robot.",
-            verifyingText: "Verifying...",
-            verificationSuccess: "Verification successful",
-            verificationError: "Please re-verify"
-        },
-        zh: {
-            captchaLabel: "我不是机器人",
-            verifyingText: "验证中...",
-            verificationSuccess: "验证成功",
-            verificationError: "请重新验证"
-        }
-    };
+        (function() {
+            const verifyCheckbox = document.getElementById('verify-checkbox');
+            const captchaLabel = document.getElementById('captcha-label');
+            const checkMark = document.getElementById('check-mark');
+            const verificationText = document.getElementById('verification-text');
+            const errorMessage = document.getElementById('error-message');
+            const submitButton = document.getElementById('submit-button');
+            const loadingText = document.getElementById('loading-text');
+            const mathCaptchaModal = document.getElementById('math-captcha-modal');
+            const mathCaptchaQuestion = document.getElementById('math-captcha-question');
+            const mathCaptchaInput = document.getElementById('math-captcha-input');
+            const mathCaptchaButton = document.getElementById('math-captcha-button');
+            const mathCaptchaError = document.getElementById('math-captcha-error');
+            let mouseMovements = [];
+            let isTouchDevice = 'ontouchstart' in document.documentElement;
+            let mathAnswer;
 
-    function detectLanguage() {
-        const userLang = navigator.language || navigator.userLanguage;
-        return userLang.startsWith('zh') ? 'zh' : 'en';
-    }
+            const translations = {
+                en: {
+                    captchaLabel: "I'm not a robot.",
+                    verifyingText: "Verifying...",
+                    verificationSuccess: "Verification successful",
+                    verificationError: "Please re-verify"
+                },
+                zh: {
+                    captchaLabel: "我不是机器人",
+                    verifyingText: "验证中...",
+                    verificationSuccess: "验证成功",
+                    verificationError: "请重新验证"
+                }
+            };
 
-    function setLanguage(lang) {
-        const translation = translations[lang];
-        captchaLabel.textContent = translation.captchaLabel;
-        loadingText.textContent = translation.verifyingText;
-        verificationText.textContent = translation.verificationSuccess;
-        errorMessage.textContent = translation.verificationError;
-    }
-
-    const userLang = detectLanguage();
-    setLanguage(userLang);
-
-    function recordMouseMovement(event) {
-        const position = { x: event.clientX, y: event.clientY, time: Date.now() };
-        mouseMovements.push(position);
-    }
-
-    function calculateSpeed(movements) {
-        let totalSpeed = 0;
-        for (let i = 1; i < movements.length; i++) {
-            const dx = movements[i].x - movements[i - 1].x;
-            const dy = movements[i].y - movements[i - 1].y;
-            const dt = movements[i].time - movements[i - 1].time;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            const speed = distance / dt;
-            totalSpeed += speed;
-        }
-        return totalSpeed / (movements.length - 1);
-    }
-
-    function isValidMovement(movements) {
-        if (movements.length < 5) return false;
-        const averageSpeed = calculateSpeed(movements);
-        let deviations = 0;
-        for (let i = 1; i < movements.length; i++) {
-            const dx = movements[i].x - movements[i - 1].x;
-            const dy = movements[i].y - movements[i - 1].y;
-            const dt = movements[i].time - movements[i - 1].time;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            const speed = distance / dt;
-            if (Math.abs(speed - averageSpeed) > averageSpeed * 0.5) {
-                deviations++;
+            function detectLanguage() {
+                const userLang = navigator.language || navigator.userLanguage;
+                return userLang.startsWith('zh') ? 'zh' : 'en';
             }
-        }
-        return deviations > (movements.length * 0.3);
-    }
 
-    function handleGyro(event) {
-        const { alpha, beta, gamma } = event;
-        gyroData.push({ alpha, beta, gamma, time: Date.now() });
-    }
+            function setLanguage(lang) {
+                const translation = translations[lang];
+                captchaLabel.textContent = translation.captchaLabel;
+                loadingText.textContent = translation.verifyingText;
+                verificationText.textContent = translation.verificationSuccess;
+                errorMessage.textContent = translation.verificationError;
+            }
 
-    function recordTouchMovement(event) {
-        const touch = event.touches[0];
-        const position = { x: touch.clientX, y: touch.clientY, time: Date.now() };
-        touchMovements.push(position);
-    }
+            const userLang = detectLanguage();
+            setLanguage(userLang);
 
-    function calculateGyroVariance(data) {
-        let variance = 0;
-        for (let i = 1; i < data.length; i++) {
-            const dAlpha = data[i].alpha - data[i - 1].alpha;
-            const dBeta = data[i].beta - data[i - 1].beta;
-            const dGamma = data[i].gamma - data[i - 1].gamma;
-            variance += Math.sqrt(dAlpha * dAlpha + dBeta * dBeta + dGamma * dGamma);
-        }
-        return variance / (data.length - 1);
-    }
+            function recordMouseMovement(event) {
+                const position = { x: event.clientX, y: event.clientY, time: Date.now() };
+                mouseMovements.push(position);
+            }
 
-    if (isTouchDevice) {
-        window.addEventListener('deviceorientation', handleGyro);
-        document.addEventListener('touchmove', recordTouchMovement);
-    } else {
-        document.addEventListener('mousemove', recordMouseMovement);
-    }
+            function calculateSpeed(movements) {
+                let totalSpeed = 0;
+                for (let i = 1; i < movements.length; i++) {
+                    const dx = movements[i].x - movements[i - 1].x;
+                    const dy = movements[i].y - movements[i - 1].y;
+                    const dt = movements[i].time - movements[i - 1].time;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const speed = distance / dt;
+                    totalSpeed += speed;
+                }
+                return totalSpeed / (movements.length - 1);
+            }
 
-    verifyCheckbox.addEventListener('change', () => {
-        if (verifyCheckbox.checked) {
-            captchaLabel.style.display = 'none';
-            verifyCheckbox.style.display = 'none';
-            loadingText.style.display = 'block';
-            
-            if (isTouchDevice) {
-                const gyroVariance = calculateGyroVariance(gyroData);
-                const validTouch = isValidMovement(touchMovements);
+            function isValidMovement(movements) {
+                if (movements.length < 5) return false;
+                const averageSpeed = calculateSpeed(movements);
+                let deviations = 0;
+                for (let i = 1; i < movements.length; i++) {
+                    const dx = movements[i].x - movements[i - 1].x;
+                    const dy = movements[i].y - movements[i - 1].y;
+                    const dt = movements[i].time - movements[i - 1].time;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const speed = distance / dt;
+                    if (Math.abs(speed - averageSpeed) > averageSpeed * 0.5) {
+                        deviations++;
+                    }
+                }
+                return deviations > (movements.length * 0.3);
+            }
 
-                loadingText.style.display = 'none';
-                if (gyroVariance < 0.5 && validTouch) {
+            function generateMathCaptcha() {
+                const num1 = Math.floor(Math.random() * 10);
+                const num2 = Math.floor(Math.random() * 10);
+                const operator = Math.random() > 0.5 ? '+' : '-';
+                mathAnswer = operator === '+' ? num1 + num2 : num1 - num2;
+                mathCaptchaQuestion.textContent = `${num1} ${operator} ${num2} = mathCaptchaQuestion.textContent = `${num1} ${operator} ${num2} = ?`;
+            }
+
+            function showMathCaptcha() {
+                mathCaptchaInput.value = '';
+                mathCaptchaError.style.display = 'none';
+                generateMathCaptcha();
+                mathCaptchaModal.style.display = 'block';
+            }
+
+            function verifyMathCaptcha() {
+                const userAnswer = parseInt(mathCaptchaInput.value, 10);
+                if (userAnswer === mathAnswer) {
+                    mathCaptchaModal.style.display = 'none';
                     checkMark.style.display = 'block';
                     verificationText.style.display = 'block';
                     submitButton.disabled = false;
                 } else {
-                    errorMessage.style.display = 'block';
-                    verifyCheckbox.checked = false;
-                }
-            } else {
-                if (isValidMovement(mouseMovements)) {
-                    loadingText.style.display = 'none';
-                    checkMark.style.display = 'block';
-                    verificationText.style.display = 'block';
-                    submitButton.disabled = false;
-                } else {
-                    loadingText.style.display = 'none';
-                    errorMessage.style.display = 'block';
-                    verifyCheckbox.checked = false;
+                    mathCaptchaError.style.display = 'block';
+                    generateMathCaptcha();
                 }
             }
-        }
-    });
-})();
+
+            document.addEventListener('mousemove', recordMouseMovement);
+
+            verifyCheckbox.addEventListener('change', () => {
+                if (verifyCheckbox.checked) {
+                    captchaLabel.style.display = 'none';
+                    verifyCheckbox.style.display = 'none';
+                    loadingText.style.display = 'block';
+                    
+                    if (isTouchDevice) {
+                        showMathCaptcha();
+                    } else {
+                        if (isValidMovement(mouseMovements)) {
+                            loadingText.style.display = 'none';
+                            checkMark.style.display = 'block';
+                            verificationText.style.display = 'block';
+                            submitButton.disabled = false;
+                        } else {
+                            loadingText.style.display = 'none';
+                            errorMessage.style.display = 'block';
+                            verifyCheckbox.checked = false;
+                        }
+                    }
+                }
+            });
+
+            mathCaptchaButton.addEventListener('click', verifyMathCaptcha);
+        })();
     </script>
 </body>
 </html>
