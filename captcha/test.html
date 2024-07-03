@@ -124,7 +124,10 @@
     const submitButton = document.getElementById('submit-button');
     const loadingText = document.getElementById('loading-text');
     let mouseMovements = [];
-
+    let isTouchDevice = 'ontouchstart' in document.documentElement;
+    let gyroData = [];
+    let touchMovements = [];
+    
     const translations = {
         en: {
             captchaLabel: "I'm not a robot.",
@@ -161,43 +164,64 @@
         mouseMovements.push(position);
     }
 
-    function isHumanLikeMovement(movements) {
-        if (movements.length < 10) return false;
-
-        // 检查移动的不规则性
-        let irregularMovements = 0;
-        for (let i = 2; i < movements.length; i++) {
-            const prevVector = {
-                x: movements[i-1].x - movements[i-2].x,
-                y: movements[i-1].y - movements[i-2].y
-            };
-            const currentVector = {
-                x: movements[i].x - movements[i-1].x,
-                y: movements[i].y - movements[i-1].y
-            };
-            
-            // 如果方向发生显著变化，增加不规则计数
-            if (Math.abs(prevVector.x - currentVector.x) > 5 || Math.abs(prevVector.y - currentVector.y) > 5) {
-                irregularMovements++;
-            }
+    function calculateSpeed(movements) {
+        let totalSpeed = 0;
+        for (let i = 1; i < movements.length; i++) {
+            const dx = movements[i].x - movements[i - 1].x;
+            const dy = movements[i].y - movements[i - 1].y;
+            const dt = movements[i].time - movements[i - 1].time;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const speed = distance / dt;
+            totalSpeed += speed;
         }
-
-        // 检查速度变化
-        let speedChanges = 0;
-        for (let i = 1; i < movements.length - 1; i++) {
-            const prevSpeed = Math.sqrt(Math.pow(movements[i].x - movements[i-1].x, 2) + Math.pow(movements[i].y - movements[i-1].y, 2)) / (movements[i].time - movements[i-1].time);
-            const nextSpeed = Math.sqrt(Math.pow(movements[i+1].x - movements[i].x, 2) + Math.pow(movements[i+1].y - movements[i].y, 2)) / (movements[i+1].time - movements[i].time);
-            
-            if (Math.abs(prevSpeed - nextSpeed) > prevSpeed * 0.5) {
-                speedChanges++;
-            }
-        }
-
-        // 人类般的移动应该有一定程度的不规则性和速度变化
-        return irregularMovements > movements.length * 0.2 && speedChanges > movements.length * 0.15;
+        return totalSpeed / (movements.length - 1);
     }
 
-    document.addEventListener('mousemove', recordMouseMovement);
+    function isValidMovement(movements) {
+        if (movements.length < 5) return false;
+        const averageSpeed = calculateSpeed(movements);
+        let deviations = 0;
+        for (let i = 1; i < movements.length; i++) {
+            const dx = movements[i].x - movements[i - 1].x;
+            const dy = movements[i].y - movements[i - 1].y;
+            const dt = movements[i].time - movements[i - 1].time;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const speed = distance / dt;
+            if (Math.abs(speed - averageSpeed) > averageSpeed * 0.5) {
+                deviations++;
+            }
+        }
+        return deviations > (movements.length * 0.3);
+    }
+
+    function handleGyro(event) {
+        const { alpha, beta, gamma } = event;
+        gyroData.push({ alpha, beta, gamma, time: Date.now() });
+    }
+
+    function recordTouchMovement(event) {
+        const touch = event.touches[0];
+        const position = { x: touch.clientX, y: touch.clientY, time: Date.now() };
+        touchMovements.push(position);
+    }
+
+    function calculateGyroVariance(data) {
+        let variance = 0;
+        for (let i = 1; i < data.length; i++) {
+            const dAlpha = data[i].alpha - data[i - 1].alpha;
+            const dBeta = data[i].beta - data[i - 1].beta;
+            const dGamma = data[i].gamma - data[i - 1].gamma;
+            variance += Math.sqrt(dAlpha * dAlpha + dBeta * dBeta + dGamma * dGamma);
+        }
+        return variance / (data.length - 1);
+    }
+
+    if (isTouchDevice) {
+        window.addEventListener('deviceorientation', handleGyro);
+        document.addEventListener('touchmove', recordTouchMovement);
+    } else {
+        document.addEventListener('mousemove', recordMouseMovement);
+    }
 
     verifyCheckbox.addEventListener('change', () => {
         if (verifyCheckbox.checked) {
@@ -205,15 +229,32 @@
             verifyCheckbox.style.display = 'none';
             loadingText.style.display = 'block';
             
-            if (isHumanLikeMovement(mouseMovements)) {
-                loadingText.style.display = 'none';
-                checkMark.style.display = 'block';
-                verificationText.style.display = 'block';
-                submitButton.disabled = false;
+            if (isTouchDevice) {
+                setTimeout(() => {
+                    const gyroVariance = calculateGyroVariance(gyroData);
+                    const validTouch = isValidMovement(touchMovements);
+
+                    loadingText.style.display = 'none';
+                    if (gyroVariance < 0.5 && validTouch) {
+                        checkMark.style.display = 'block';
+                        verificationText.style.display = 'block';
+                        submitButton.disabled = false;
+                    } else {
+                        errorMessage.style.display = 'block';
+                        verifyCheckbox.checked = false;
+                    }
+                }, 2000);
             } else {
-                loadingText.style.display = 'none';
-                errorMessage.style.display = 'block';
-                verifyCheckbox.checked = false;
+                if (isValidMovement(mouseMovements)) {
+                    loadingText.style.display = 'none';
+                    checkMark.style.display = 'block';
+                    verificationText.style.display = 'block';
+                    submitButton.disabled = false;
+                } else {
+                    loadingText.style.display = 'none';
+                    errorMessage.style.display = 'block';
+                    verifyCheckbox.checked = false;
+                }
             }
         }
     });
