@@ -113,135 +113,142 @@
         </script>
     </noscript>
 
-                    
-                <script>
-    (function() {
-        const verifyCheckbox = document.getElementById('verify-checkbox');
-        const captchaLabel = document.getElementById('captcha-label');
-        const checkMark = document.getElementById('check-mark');
-        const verificationText = document.getElementById('verification-text');
-        const errorMessage = document.getElementById('error-message');
-        const submitButton = document.getElementById('submit-button');
-        const loadingText = document.getElementById('loading-text');
-        let mouseMovements = [];
-        let isTouchDevice = 'ontouchstart' in document.documentElement;
+    <script>
+(function() {
+    const verifyCheckbox = document.getElementById('verify-checkbox');
+    const captchaLabel = document.getElementById('captcha-label');
+    const checkMark = document.getElementById('check-mark');
+    const verificationText = document.getElementById('verification-text');
+    const errorMessage = document.getElementById('error-message');
+    const submitButton = document.getElementById('submit-button');
+    const loadingText = document.getElementById('loading-text');
+    let mouseMovements = [];
+    let isTouchDevice = 'ontouchstart' in document.documentElement;
 
-        const translations = {
-            en: {
-                captchaLabel: "I'm not a robot.",
-                verifyingText: "Verifying...",
-                verificationSuccess: "Verification successful",
-                verificationError: "Please re-verify"
-            },
-            zh: {
-                captchaLabel: "我不是机器人",
-                verifyingText: "验证中...",
-                verificationSuccess: "验证成功",
-                verificationError: "请重新验证"
+    const translations = {
+        en: {
+            captchaLabel: "I'm not a robot.",
+            verifyingText: "Verifying...",
+            verificationSuccess: "Verification successful",
+            verificationError: "Please re-verify"
+        },
+        zh: {
+            captchaLabel: "我不是机器人",
+            verifyingText: "验证中...",
+            verificationSuccess: "验证成功",
+            verificationError: "请重新验证"
+        }
+        // 可以根据需要添加更多语言
+    };
+
+    function detectLanguage() {
+        const userLang = navigator.language || navigator.userLanguage;
+        return userLang.startsWith('zh') ? 'zh' : 'en'; // 默认返回 'en'，可以根据需要修改
+    }
+
+    function setLanguage(lang) {
+        const translation = translations[lang];
+        captchaLabel.textContent = translation.captchaLabel;
+        loadingText.textContent = translation.verifyingText;
+        verificationText.textContent = translation.verificationSuccess;
+        errorMessage.textContent = translation.verificationError;
+    }
+
+    const userLang = detectLanguage();
+    setLanguage(userLang);
+
+    function recordMouseMovement(event) {
+        const position = { x: event.clientX, y: event.clientY, time: Date.now() };
+        mouseMovements.push(position);
+    }
+
+    function calculateSpeed(movements) {
+        let totalSpeed = 0;
+        for (let i = 1; i < movements.length; i++) {
+            const dx = movements[i].x - movements[i - 1].x;
+            const dy = movements[i].y - movements[i - 1].y;
+            const dt = movements[i].time - movements[i - 1].time;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const speed = distance / dt;
+            totalSpeed += speed;
+        }
+        return totalSpeed / (movements.length - 1);
+    }
+
+    function isValidMovement(movements) {
+        if (movements.length < 5) return false;
+
+        const averageSpeed = calculateSpeed(movements);
+        let deviations = 0;
+        for (let i = 1; i < movements.length; i++) {
+            const dx = movements[i].x - movements[i - 1].x;
+            const dy = movements[i].y - movements[i - 1].y;
+            const dt = movements[i].time - movements[i - 1].time;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const speed = distance / dt;
+            if (Math.abs(speed - averageSpeed) > averageSpeed * 0.5) {
+                deviations++;
             }
-            // 你可以在这里添加更多语言
-        };
-
-        function detectLanguage() {
-            const userLang = navigator.language || navigator.userLanguage;
-            return userLang.startsWith('zh') ? 'zh' : 'en'; // 默认返回 'en'，可以根据需要修改
         }
+        return deviations > (movements.length * 0.3);
+    }
 
-        function setLanguage(lang) {
-            const translation = translations[lang];
-            captchaLabel.textContent = translation.captchaLabel;
-            loadingText.textContent = translation.verifyingText;
-            verificationText.textContent = translation.verificationSuccess;
-            errorMessage.textContent = translation.verificationError;
-        }
+    document.addEventListener('mousemove', recordMouseMovement);
 
-        const userLang = detectLanguage();
-        setLanguage(userLang);
-
-        function recordMouseMovement(event) {
-            const position = { x: event.clientX, y: event.clientY, time: Date.now() };
-            mouseMovements.push(position);
-        }
-
-        function calculateSpeed(movements) {
-            let totalSpeed = 0;
-            for (let i = 1; i < movements.length; i++) {
-                const dx = movements[i].x - movements[i - 1].x;
-                const dy = movements[i].y - movements[i - 1].y;
-                const dt = movements[i].time - movements[i - 1].time;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                const speed = distance / dt;
-                totalSpeed += speed;
-            }
-            return totalSpeed / (movements.length - 1);
-        }
-
-        function isValidMovement(movements) {
-            if (movements.length < 5) return false;
-
-            const averageSpeed = calculateSpeed(movements);
-            let deviations = 0;
-            for (let i = 1; i < movements.length; i++) {
-                const dx = movements[i].x - movements[i - 1].x;
-                const dy = movements[i].y - movements[i - 1].y;
-                const dt = movements[i].time - movements[i - 1].time;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                const speed = distance / dt;
-                if (Math.abs(speed - averageSpeed) > averageSpeed * 0.5) {
-                    deviations++;
-                }
-            }
-            return deviations > (movements.length * 0.3);
-        }
-
-        document.addEventListener('mousemove', recordMouseMovement);
-
-        verifyCheckbox.addEventListener('change', () => {
-            if (verifyCheckbox.checked) {
-                captchaLabel.style.display = 'none';
-                verifyCheckbox.style.display = 'none';
-                loadingText.style.display = 'block';
-                
-                // 示例：调用Turnstile API
-                fetch('https://api.cloudflare.com/turnstile/check', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        event: 'captcha_verification',
-                        details: {
-                            movements: mouseMovements,
-                            isTouchDevice: isTouchDevice
-                        }
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Turnstile Response:', data);
-                    if (data.allowed) {
-                        // 验证成功
-                        loadingText.style.display = 'none';
-                        checkMark.style.display = 'block';
-                        verificationText.style.display = 'block';
-                        submitButton.disabled = false;
-                    } else {
-                        // 验证失败
-                        loadingText.style.display = 'none';
-                        errorMessage.style.display = 'block';
-                        verifyCheckbox.checked = false;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error calling Turnstile API:', error);
-                    // 处理API调用错误
+    verifyCheckbox.addEventListener('change', () => {
+        if (verifyCheckbox.checked) {
+            captchaLabel.style.display = 'none';
+            verifyCheckbox.style.display = 'none';
+            loadingText.style.display = 'block';
+            
+            if (isTouchDevice) {
+                // 手机端验证逻辑
+                if (isValidMovement(mouseMovements)) {
+                    loadingText.style.display = 'none';
+                    checkMark.style.display = 'block';
+                    verificationText.style.display = 'block';
+                    submitButton.disabled = false;
+                } else {
                     loadingText.style.display = 'none';
                     errorMessage.style.display = 'block';
                     verifyCheckbox.checked = false;
-                });
+                }
+            } else {
+                // 非手机端验证逻辑
+                if (isValidMovement(mouseMovements)) {
+                    loadingText.style.display = 'none';
+                    checkMark.style.display = 'block';
+                    verificationText.style.display = 'block';
+                    submitButton.disabled = false;
+                } else {
+                    loadingText.style.display = 'none';
+                    errorMessage.style.display = 'block';
+                    verifyCheckbox.checked = false;
+                }
             }
-        });
-    })();
-</script>
+        }
+    });
+
+    // Turnstile 相关的代码逻辑
+    function sendAnalyticsData() {
+        // 发送鼠标行为数据到服务器进行分析
+        const analyticsData = {
+            movements: mouseMovements,
+            userLang: userLang
+        };
+
+        // 这里可以将数据发送到服务器，进行进一步的分析和处理
+        console.log('Sending analytics data:', analyticsData);
+    }
+
+    // 在用户进行验证通过后，发送行为数据
+    submitButton.addEventListener('click', () => {
+        if (verifyCheckbox.checked) {
+            sendAnalyticsData();
+        }
+    });
+
+})();
+    </script>                              
 </body>
 </html>
