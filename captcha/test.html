@@ -1,85 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIR - Captcha Demo</title>
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <style>
-    #captcha-container {
-        width: 260px;
-        height: 40px;
-        border: 1px solid #ccc;
-        padding: 20px;
-        margin: 50px auto;
-        text-align: left;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-family: Arial, sans-serif;
-        background-color: #ffffff; /* Default light background */
-        color: #000000; /* Default light text color */
-    }
-
-    /* Dark mode styles */
-    @media (prefers-color-scheme: dark) {
-        #captcha-container {
-            background-color: #333333;
-            color: #ffffff;
-            border-color: #555555;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-        }
-        #verify-checkbox {
-            border-color: #555555;
-        }
-    }
-
-    #verify-section {
-        display: flex;
-        align-items: center;
-    }
-    #verify-checkbox {
-        margin-right: 10px;
-    }
-    #captcha-label {
-        margin-right: 20px;
-    }
-    #brand {
-        font-weight: bold;
-        font-size: 13px;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        position: relative;
-        margin-top: 23.5px;
-    }
-    #brand img {
-        width: 35px;
-        position: absolute;
-        right: 0;
-        top: -30px;
-    }
-    #success-icon, #failure-icon {
-        width: 35px;
-        height: 35px;
-        margin-left: 5px;
-    }
-    #verification-text {
-        margin-left: 10px;
-        color: green;
-        font-weight: bold;
-        font-size: 16px;
-    }
-    #loading-text {
-        display: none;
-        margin-right: 20px;
-        font-size: 16px;
-    }
-
+<style>
     /* Styles for the math captcha modal */
-    #math-c#math-captcha-modal {
+    #math-captcha-modal {
+        display: none;
         position: fixed;
         z-index: 1000;
         left: 50%;
@@ -129,51 +51,9 @@
         margin-top: 10px;
     }
 </style>
-</head>
-<body>
-    <h2>AIR - Captcha Demo</h2>
-    <div id="captcha-container">
-        <div id="verify-section">
-            <input type="checkbox" id="verify-checkbox">
-            <label for="verify-checkbox" id="captcha-label">I'm not a robot.</label>
-            <span id="loading-text">Verifying...</span>
-            <img id="check-mark" src="https://test.xyehr.cn/css/check-mark-1.svg" style="display: none; width: 30px; height: 30px;">
-            <p id="verification-text" style="display: none;">Verification successful</p>
-            <p id="error-message" style="color: red; display: none;">Please re-verify</p>
-        </div>
-        <div id="brand">
-            <img src="../css/air-captcha-logo.svg" alt="AIR Captcha Logo">
-            AIR Captcha
-        </div>
-    </div>
-    <button id="submit-button" disabled>Submit</button>
 
-    <div id="math-captcha-modal">
-        <h3 id="math-captcha-title">Solve the Math Problem</h3>
-        <div id="math-captcha-question"></div>
-        <input type="text" id="math-captcha-input">
-        <button id="math-captcha-button">Verify</button>
-        <p id="math-captcha-error">Incorrect answer, please try again.</p>
-    </div>
-    
-    <noscript>
-        <style>
-            #captcha-label, #verify-checkbox {
-                display: none;
-            }
-            #noscript-message {
-                display: block;
-                color: green;
-            }
-        </style>
-        <p id="noscript-message">Verification Passed (No JavaScript)</p>
-        <script>
-            document.getElementById('submit-button').disabled = false;
-        </script>
-    </noscript>
-
-    <script>
-        (function() {
+<script>
+    (function() {
         const verifyCheckbox = document.getElementById('verify-checkbox');
         const captchaLabel = document.getElementById('captcha-label');
         const checkMark = document.getElementById('check-mark');
@@ -323,6 +203,4 @@
 
         mathCaptchaButton.addEventListener('click', verifyMathCaptcha);
     })();
-    </script>
-</body>
-</html>
+</script>
