@@ -266,6 +266,19 @@
             verificationText.style.display = 'block';
             submitButton.disabled = false;
             errorMessage.style.display = 'none';
+            
+            setTimeout(() => {
+                loadingText.style.display = 'block';
+                verificationText.style.display = 'none';
+                setTimeout(() => {
+                    loadingText.style.display = 'none';
+                    checkMark.style.display = 'none';
+                    captchaLabel.style.display = 'inline';
+                    verifyCheckbox.style.display = 'inline';
+                    verifyCheckbox.checked = false;
+                }, 2000);
+            }, 2000);
+            
         } else {
             mathCaptchaError.style.display = 'block';
             generateMathCaptcha();
@@ -278,12 +291,10 @@
         if (verifyCheckbox.checked) {
             captchaLabel.style.display = 'none';
             verifyCheckbox.style.display = 'none';
-            loadingText.style.display = 'block';
-            loadingText.textContent = translations[userLang].verifyingText;
-
             if (isTouchDevice) {
                 showMathCaptcha();
             } else {
+                loadingText.style.display = 'block';
                 setTimeout(() => {
                     if (isValidMovement(mouseMovements)) {
                         loadingText.style.display = 'none';
@@ -291,6 +302,19 @@
                         verificationText.style.display = 'block';
                         submitButton.disabled = false;
                         errorMessage.style.display = 'none';
+                        
+                        setTimeout(() => {
+                            loadingText.style.display = 'block';
+                            verificationText.style.display = 'none';
+                            setTimeout(() => {
+                                loadingText.style.display = 'none';
+                                checkMark.style.display = 'none';
+                                captchaLabel.style.display = 'inline';
+                                verifyCheckbox.style.display = 'inline';
+                                verifyCheckbox.checked = false;
+                            }, 2000);
+                        }, 2000);
+                        
                     } else {
                         loadingText.style.display = 'none';
                         errorMessage.style.display = 'block';
