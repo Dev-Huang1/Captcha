@@ -132,7 +132,7 @@
     <button id="submit-button" disabled>Submit</button>
 
     <div id="math-captcha-modal">
-        <h3>Solve the Math Problem</h3>
+        <h3 id="math-captcha-title">Solve the Math Problem</h3>
         <div id="math-captcha-question"></div>
         <input type="text" id="math-captcha-input">
         <button id="math-captcha-button">Verify</button>
@@ -169,6 +169,7 @@
     const mathCaptchaInput = document.getElementById('math-captcha-input');
     const mathCaptchaButton = document.getElementById('math-captcha-button');
     const mathCaptchaError = document.getElementById('math-captcha-error');
+    const mathCaptchaTitle = document.getElementById('math-captcha-title');
     let mouseMovements = [];
     let isTouchDevice = 'ontouchstart' in document.documentElement;
     let mathAnswer;
@@ -178,13 +179,15 @@
             captchaLabel: "I'm not a robot.",
             verifyingText: "Verifying...",
             verificationSuccess: "Verification successful",
-            verificationError: "Please re-verify"
+            verificationError: "Please re-verify",
+            verifyButtonText: "Verify"
         },
         zh: {
             captchaLabel: "我不是机器人",
             verifyingText: "验证中...",
             verificationSuccess: "验证成功",
-            verificationError: "请重新验证"
+            verificationError: "请重新验证",
+            verifyButtonText: "验证"
         }
     };
 
@@ -199,6 +202,8 @@
         loadingText.textContent = translation.verifyingText;
         verificationText.textContent = translation.verificationSuccess;
         errorMessage.textContent = translation.verificationError;
+        mathCaptchaButton.textContent = translation.verifyButtonText;
+        mathCaptchaTitle.textContent = translation.verifyingText;
     }
 
     const userLang = detectLanguage();
@@ -239,7 +244,7 @@
         return deviations > (movements.length * 0.3);
     }
 
-    function generateMathCaptcha() {
+     function generateMathCaptcha() {
         let num1, num2, operator;
         do {
             num1 = Math.floor(Math.random() * 10);
