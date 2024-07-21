@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+
+<url>
+  <loc>https://test.xyehr.cn/</loc>
+  <lastmod>2024-07-20T15:49:51+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://test.xyehr.cn/captcha/air-captcha.html</loc>
+  <lastmod>2024-07-20T15:49:51+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://test.xyehr.cn/captcha/turnstile.html</loc>
+  <lastmod>2024-07-20T15:49:51+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://test.xyehr.cn/captcha/friendly-captcha.html</loc>
+  <lastmod>2024-07-20T15:49:51+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://test.xyehr.cn/captcha/arkose-labs-funcaptcha.html</loc>
+  <lastmod>2024-07-20T15:49:51+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://test.xyehr.cn/captcha/perimeterx.html</loc>
+  <lastmod>2024-07-20T15:49:51+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://test.xyehr.cn/captcha/recaptcha.html</loc>
+  <lastmod>2024-07-20T15:49:51+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://test.xyehr.cn/captcha/aws-waf-captcha.html</loc>
+  <lastmod>2024-07-20T15:49:51+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://test.xyehr.cn/captcha/hcaptcha.html</loc>
+  <lastmod>2024-07-20T15:49:51+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://test.xyehr.cn/captcha/mcaptcha.html</loc>
+  <lastmod>2024-07-20T15:49:51+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://test.xyehr.cn/captcha/mtcaptcha.html</loc>
+  <lastmod>2024-07-20T15:49:51+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+
+
+</urlset>
