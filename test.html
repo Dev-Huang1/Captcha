@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human-Machine Verification</title>
+    <link rel="stylesheet" type="text/css" href="/css/index.css">
+    <meta name="msvalidate.01" content="3D965876D21B64F5D8C49C72B27F4A29" />
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <style>
+        .hidden {
+            display: none;
+        }
+        .container {
+            text-align: center;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div id="verification-container" class="container">
+        <h2>Please verify you are human</h2>
+        <div class="cf-turnstile" data-sitekey="YOUR_SITE_KEY" data-callback="onTurnstileSuccess"></div>
+    </div>
+    
+    <div id="content-container" class="container hidden">
+        <h2>Human-machine Verification Demo</h2>
+        <a href="/captcha/air-captcha.html">One Captcha</a>
+        <a href="/captcha/turnstile.html">CloudFlare Turnstile</a>
+        <a href="/captcha/friendly-captcha.html">Friendly Captcha</a>
+        <a href="/captcha/arkose-labs-funcaptcha.html">Arkose Labs FunCAPTCHA</a>
+        <a href="/captcha/perimeterx.html">PerimeterX</a>
+        <a href="/captcha/recaptcha.html">Google reCAPTCHA</a>
+        <a href="/captcha/aws-waf-captcha.html">AWS WAF CAPTCHA</a>
+        <a href="/captcha/hcaptcha.html">hCAPTCHA</a>
+        <a href="/captcha/mcaptcha.html">mCAPTCHA</a>
+        <a href="/captcha/mtcaptcha.html">MTCaptcha</a>
+    </div>
+    
+    <script>
+        function onTurnstileSuccess(token) {
+            document.getElementById('verification-container').classList.add('hidden');
+            document.getElementById('content-container').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
