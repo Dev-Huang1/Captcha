@@ -15,12 +15,30 @@
             text-align: center;
             margin-top: 50px;
         }
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+            margin: auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <div id="verification-container" class="container">
         <h2>Please verify you are human</h2>
-        <div class="cf-turnstile" data-sitekey="0x4AAAAAAAdcuiWK4jIId64g" data-callback="onTurnstileSuccess"></div>
+        <div class="cf-turnstile" data-sitekey="YOUR_SITE_KEY" data-callback="onTurnstileSuccess"></div>
+    </div>
+    
+    <div id="loading-container" class="container hidden">
+        <h2>Loading...</h2>
+        <div class="loader"></div>
     </div>
     
     <div id="content-container" class="container hidden">
@@ -40,7 +58,13 @@
     <script>
         function onTurnstileSuccess(token) {
             document.getElementById('verification-container').classList.add('hidden');
-            document.getElementById('content-container').classList.remove('hidden');
+            document.getElementById('loading-container').classList.remove('hidden');
+            
+            // Simulate a loading delay
+            setTimeout(function() {
+                document.getElementById('loading-container').classList.add('hidden');
+                document.getElementById('content-container').classList.remove('hidden');
+            }, 2000); // Adjust the delay time as needed
         }
     </script>
 </body>
