@@ -7,8 +7,6 @@
     <link rel="stylesheet" type="text/css" href="/css/index.css">
     <meta name="msvalidate.01" content="3D965876D21B64F5D8C49C72B27F4A29" />
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-    <script src="https://hcaptcha.com/1/api.js" async defer></script>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/friendly-challenge@0.9.16/widget.module.min.js" async defer></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/friendly-challenge@0.9.16/widget.min.js" async defer></script>
     <style>
@@ -24,8 +22,8 @@
             top: 0;
             left: 0;
             width: 0%;
-            height: 4px;
-            background-color: #3498db;
+            height: 2px;
+            background-color: #0066ff;
             z-index: 1000;
             transition: width 2s;
         }
@@ -36,10 +34,16 @@
     
     <div id="verification-container" class="container">
         <h2>Please verify you are human</h2>
-        <div class="cf-turnstile" data-sitekey="0x4AAAAAAAdcuiWK4jIId64g" data-callback="onTurnstileSuccess"></div>
-        <div class="h-captcha" data-sitekey="2190aa94-6bde-422c-b33e-1f38164a06e8" data-callback="onHcaptchaSuccess"></div>
-        <div class="g-recaptcha" data-sitekey="6Ld08AMqAAAAAK1Z_yK2Yna6-Ku1KvIHg1aOsB5S" data-callback="onRecaptchaSuccess"></div>
-        <div class="frc-captcha" data-sitekey="FCMQT7KCMRL1UH3B" data-callback="onFriendlyCaptchaSuccess"></div>
+        <div id="turnstile-container" class="cf-turnstile" data-sitekey="0x4AAAAAAAdcuiWK4jIId64g" data-callback="onTurnstileSuccess"></div>
+        <div id="hcaptcha-container" class="hidden">
+            <div class="h-captcha" data-sitekey="2190aa94-6bde-422c-b33e-1f38164a06e8" data-callback="onHcaptchaSuccess"></div>
+        </div>
+        <div id="recaptcha-container" class="hidden">
+            <div class="g-recaptcha" data-sitekey="6Ld08AMqAAAAAK1Z_yK2Yna6-Ku1KvIHg1aOsB5S" data-callback="onRecaptchaSuccess"></div>
+        </div>
+        <div id="friendly-captcha-container" class="hidden">
+            <div class="frc-captcha" data-sitekey="FCMQT7KCMRL1UH3B" data-callback="onFriendlyCaptchaSuccess"></div>
+        </div>
     </div>
     
     <div id="content-container" class="container hidden">
@@ -64,17 +68,20 @@
 
         function onTurnstileSuccess(token) {
             turnstileVerified = true;
-            checkAllVerified();
+            document.getElementById('turnstile-container').classList.add('hidden');
+            document.getElementById('hcaptcha-container').classList.remove('hidden');
         }
 
         function onHcaptchaSuccess(token) {
             hcaptchaVerified = true;
-            checkAllVerified();
+            document.getElementById('hcaptcha-container').classList.add('hidden');
+            document.getElementById('recaptcha-container').classList.remove('hidden');
         }
 
         function onRecaptchaSuccess(token) {
             recaptchaVerified = true;
-            checkAllVerified();
+            document.getElementById('recaptcha-container').classList.add('hidden');
+            document.getElementById('friendly-captcha-container').classList.remove('hidden');
         }
 
         function onFriendlyCaptchaSuccess(solution) {
@@ -97,6 +104,13 @@
                 }, 2000); // Adjust the delay time as needed
             }
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Turnstile
+            // Initialize hCaptcha dynamically after Turnstile verification
+            // Initialize reCAPTCHA dynamically after hCaptcha verification
+            // Initialize FriendlyCaptcha dynamically after reCAPTCHA verification
+        });
     </script>
 </body>
 </html>
