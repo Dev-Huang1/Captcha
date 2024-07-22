@@ -15,30 +15,24 @@
             text-align: center;
             margin-top: 50px;
         }
-        .loader {
-            border: 16px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 16px solid #3498db;
-            width: 120px;
-            height: 120px;
-            animation: spin 2s linear infinite;
-            margin: auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        #loading-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background-color: #3498db;
+            z-index: 1000;
+            transition: width 2s;
         }
     </style>
 </head>
 <body>
+    <div id="loading-bar"></div>
+    
     <div id="verification-container" class="container">
         <h2>Please verify you are human</h2>
         <div class="cf-turnstile" data-sitekey="0x4AAAAAAAdcuiWK4jIId64g" data-callback="onTurnstileSuccess"></div>
-    </div>
-    
-    <div id="loading-container" class="container hidden">
-        <h2>Loading...</h2>
-        <div class="loader"></div>
     </div>
     
     <div id="content-container" class="container hidden">
@@ -58,12 +52,15 @@
     <script>
         function onTurnstileSuccess(token) {
             document.getElementById('verification-container').classList.add('hidden');
-            document.getElementById('loading-container').classList.remove('hidden');
+            
+            // Show loading bar and start animation
+            var loadingBar = document.getElementById('loading-bar');
+            loadingBar.style.width = '100%';
             
             // Simulate a loading delay
             setTimeout(function() {
-                document.getElementById('loading-container').classList.add('hidden');
                 document.getElementById('content-container').classList.remove('hidden');
+                loadingBar.style.width = '0%'; // Reset loading bar
             }, 2000); // Adjust the delay time as needed
         }
     </script>
