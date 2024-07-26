@@ -12,12 +12,7 @@
     <link rel="stylesheet" type="text/css" href="/css/iframe.css">
     <script>
         var mtcaptchaConfig = {
-            "sitekey": "MTPublic-D7Qv7ciaC",
-            "callback": function (response) {
-                if (response === 'verified') {
-                    document.querySelector('#submit-button').removeAttribute('disabled');
-                }
-            }
+            "sitekey": "MTPublic-D7Qv7ciaC"
         };
         (function () {
             var mt_service = document.createElement('script');
@@ -31,7 +26,6 @@
 <body>
     <div class="cf-turnstile" data-sitekey="0x4AAAAAAAdcuiWK4jIId64g"></div>
     <div class="g-recaptcha" data-sitekey="6Ld08AMqAAAAAK1Z_yK2Yna6-Ku1KvIHg1aOsB5S"></div>
-    </br>
     <div class="h-captcha" data-sitekey="2190aa94-6bde-422c-b33e-1f38164a06e8"></div>
     <div class="frc-captcha" data-sitekey="FCMQT7KCMRL1UH3B" data-puzzle-endpoint="https://api.friendlycaptcha.com/api/v1/puzzle" data-start="auto"></div>
     <iframe src="https://demo.mcaptcha.org/widget/?sitekey=iHdsVgQoKMX3XINmPLUStQEOCfHsjTfn" height="100px" width="30%"></iframe>
