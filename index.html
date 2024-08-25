@@ -8,8 +8,8 @@
     <meta name="msvalidate.01" content="3D965876D21B64F5D8C49C72B27F4A29" />
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <!-- Yandex.RTB -->
-<script>window.yaContextCb=window.yaContextCb||[]</script>
-<script src="https://yandex.ru/ads/system/context.js" async></script>
+    <script>window.yaContextCb=window.yaContextCb||[]</script>
+    <script src="https://yandex.ru/ads/system/context.js" async></script>
     <style>
         .hidden {
             display: none;
@@ -54,6 +54,11 @@
     
     <script>
         function onTurnstileSuccess(token) {
+            // Set a cookie to remember the verification for 30 minutes
+            var now = new Date();
+            var expiry = new Date(now.getTime() + 30 * 60 * 1000); // 30 minutes
+            document.cookie = "verified=true; expires=" + expiry.toUTCString() + "; path=/";
+
             document.getElementById('verification-container').classList.add('hidden');
             
             // Show loading bar and start animation
@@ -66,6 +71,22 @@
                 loadingBar.style.display = 'none'; // Hide loading bar
             }, 2000); // Adjust the delay time as needed
         }
+
+        // Check if the user is already verified
+        function checkVerification() {
+            var cookies = document.cookie.split(';').reduce(function(acc, cookie) {
+                var [name, value] = cookie.split('=');
+                acc[name.trim()] = value;
+                return acc;
+            }, {});
+            if (cookies['verified']) {
+                document.getElementById('verification-container').classList.add('hidden');
+                document.getElementById('content-container').classList.remove('hidden');
+            }
+        }
+
+        // Run the check on page load
+        window.onload = checkVerification;
     </script>
 </body>
 </html>
