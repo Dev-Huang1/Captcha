@@ -13,7 +13,7 @@
 </head>
 <body>
     <h1>Google reCAPTCHA Demo</1>
-    <form action="https://test.xyehr.cn/submit.html" method="POST" onsubmit="return false;">
+    <form action="a" method="POST" onsubmit="return false;">
         <div class="g-recaptcha" data-sitekey="6Lf2y0oqAAAAAEMtBNfy1kCXCvPnZ_gbH0pinsO8" data-callback="onSubmit"></div>
         <br/>
         <input type="submit" id="submit-button" value="Submit" disabled>
@@ -53,16 +53,9 @@ window.yaContextCb.push(() => {
 </script>
         
     <script>
-      document.addEventListener('DOMContentLoaded', function (event) {
-    const submitButton = document.getElementById('submit-button');
-    submitButton.disabled = true;
-
-    function enableSubmitButton() {
+    function onSubmit() {
         submitButton.disabled = false;
     }
-
-    window.onSubmit = enableSubmitButton;
-});
     </script>
 
     <script src="https://giscus.app/client.js"
