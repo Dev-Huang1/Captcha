@@ -7,54 +7,18 @@
     <script src="https://recaptcha.net/recaptcha/api.js" async defer></script>
     <script src="../javascript/theme.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/style.css">
-    <!-- Yandex.RTB -->
-<script>window.yaContextCb=window.yaContextCb||[]</script>
-<script src="https://yandex.ru/ads/system/context.js" async></script>
 </head>
 <body>
     <h1>Google reCAPTCHA Demo</1>
     <form action="a" method="POST" onsubmit="return false;">
-        <button class="g-recaptcha" data-sitekey="6Lf2y0oqAAAAAEMtBNfy1kCXCvPnZ_gbH0pinsO8" data-callback="onSubmit"></button>
+        <div class="g-recaptcha" data-callback="onSubmit"></div>
         <br/>
-        <input type="submit" id="submit-button" value="Submit" disabled>
+        <input class="g-recaptcha" data-sitekey="6Lf2y0oqAAAAAEMtBNfy1kCXCvPnZ_gbH0pinsO8" type="submit" id="submit-button" value="Submit" data-callback="onSubmit">
     </form>
-
-    <!-- Yandex.RTB R-A-11714884-1 -->
-<div id="yandex_rtb_R-A-11714884-1"></div>
-<script>
-window.yaContextCb.push(() => {
-    Ya.Context.AdvManager.render({
-        "blockId": "R-A-11714884-1",
-        "renderTo": "yandex_rtb_R-A-11714884-1"
-    })
-})
-</script>
-
-        <!-- Yandex.RTB R-A-11714884-2 -->
-<script>
-window.yaContextCb.push(() => {
-    Ya.Context.AdvManager.render({
-        "blockId": "R-A-11714884-2",
-        "type": "fullscreen",
-        "platform": "touch"
-    })
-})
-</script>
-
-        <!-- Yandex.RTB R-A-11714884-3 -->
-<script>
-window.yaContextCb.push(() => {
-    Ya.Context.AdvManager.render({
-        "blockId": "R-A-11714884-3",
-        "type": "floorAd",
-        "platform": "touch"
-    })
-})
-</script>
         
     <script>
     function onSubmit() {
-        submitButton.disabled = false;
+        alert('Success')
     }
     </script>
 
