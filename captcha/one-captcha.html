@@ -5,13 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="devtools" content="no">
     <title>Air Captcha Demo</title>
-    <script src="https://captcha.xyehr.cn/captcha/v2/api.js" defer></script>
+    <script src="https://onecaptcha.us.kg/assets/api/v3-db/api.js" defer></script>
 </head>
 <body>
     <h1>Air Captcha Demo</h1>
-    <div id="air-captcha"></div>
-    <button id="submit-button" disabled>Submit</button>
+    <div id="one-captcha" data-callback="CaptchaSuccess" error-callback="CaptchaError"></div>
 
+    <script>
+        function CaptchaSuccess() {
+            alert('CAPTCHA verification successful!');
+        };
+
+        function CaptchaError() {
+            alert('Error');
+        }
+    </script>
+    
     <script src="https://giscus.app/client.js"
         data-repo="Dev-Huang1/Human-Machine-Verification"
         data-repo-id="R_kgDOMO97Tw"
