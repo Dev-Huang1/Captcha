@@ -12,8 +12,26 @@
     <div id="one-captcha" data-callback="CaptchaSuccess" error-callback="CaptchaError"></div>
 
     <script>
-        function CaptchaSuccess() {
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+        
+        function CaptchaSuccess(response) {
             alert('CAPTCHA verification successful!');
+
+            // 验证 token
+            const receivedToken = response.token; // 从响应中获取 token
+            
+            // 获取 cookie 中的 token
+            const cookieToken = getCookie('captchaToken');
+            
+            if (receivedToken === cookieToken) {
+                alert("Tokens match. Verification successful.");
+            } else {
+                alert("Tokens do not match. Verification failed.");
+            }
         };
 
         function CaptchaError() {
