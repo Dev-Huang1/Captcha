@@ -16,7 +16,7 @@
 <body>
     <h1>Friendly Captcha Demo</h1>
     <!-- Add the captcha widget -->
-    <div class="frc-captcha" data-sitekey="FCMQT7KCMRL1UH3B" data-puzzle-endpoint="https://api.friendlycaptcha.com/api/v1/puzzle" data-start="auto"></div>
+    <div class="frc-captcha" data-sitekey="FCMQT7KCMRL1UH3B" data-puzzle-endpoint="https://api.friendlycaptcha.com/api/v1/puzzle" data-start="auto" data-callback="CaptchaSuccess"></div>
 
     <!-- Yandex.RTB R-A-11714884-1 -->
 <div id="yandex_rtb_R-A-11714884-1"></div>
@@ -52,18 +52,9 @@ window.yaContextCb.push(() => {
 </script>
     
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const submitButton = document.getElementById("submit-button");
-        const captchaWidget = document.querySelector(".frc-captcha");
-
-        window.addEventListener("friendlyCaptcha-success", () => {
-            submitButton.removeAttribute("disabled");
-        });
-
-        window.addEventListener("friendlyCaptcha-error", () => {
-            submitButton.setAttribute("disabled", true);
-        });
-    });
+    function CaptchaSuccess(solution) {
+        alert(solution)
+    }
 </script>
     
     <script src="https://giscus.app/client.js"
