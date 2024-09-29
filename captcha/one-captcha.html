@@ -3,56 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="devtools" content="no">
-    <title>One Captcha Demo</title>
-    <script src="https://onecaptcha.us.kg/assets/api/v3-db/api2.js" defer></script>
+    <title>CAPTCHA Demo</title>
+    <script src="https://onecaptcha.us.kg/assets/api/v3-db/api2.js"></script>
 </head>
 <body>
-    <h1>One Captcha Demo</h1>
     <div id="one-captcha" data-callback="CaptchaSuccess" error-callback="CaptchaError"></div>
 
     <script>
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-        }
-        
-        function CaptchaSuccess(response) {
-            alert('CAPTCHA verification successful!');
+        function CaptchaSuccess(token) {
+    // 获取名为 'OneCaptchaToken' 的 cookie 值
+    function getTokenCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
 
-            // 验证 token
-            const receivedToken = response.token; // 从响应中获取 token
-            
-            // 获取 cookie 中的 token
-            const cookieToken = getCookie('captchaToken');
-            
-            if (receivedToken === cookieToken) {
-                alert("Tokens match. Verification successful.");
-            } else {
-                alert("Tokens do not match. Verification failed.");
-            }
-        };
+    // 获取 OneCaptchaToken 的 cookie
+    const cookieToken = getTokenCookie('OneCaptchaToken');
+
+    // 比较 token 和 cookieToken 是否相同
+    if (token === cookieToken) {
+        alert('Token matches the cookie!');
+    } else {
+        alert('Token does not match the cookie.');
+    }
+}
+
 
         function CaptchaError() {
             alert('Error');
         }
-    </script>
-    
-    <script src="https://giscus.app/client.js"
-        data-repo="Dev-Huang1/Human-Machine-Verification"
-        data-repo-id="R_kgDOMO97Tw"
-        data-category="Announcements"
-        data-category-id="DIC_kwDOMO97T84CgmsZ"
-        data-mapping="pathname"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="0"
-        data-input-position="bottom"
-        data-theme="preferred_color_scheme"
-        data-lang="en"
-        crossorigin="anonymous"
-        async>
     </script>
 </body>
 </html>
