@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passkey Demo (WebAuthn)</title>
+</head>
+<body>
+    <h1>Passkey Demo</h1>
+
+    <button id="registerBtn">注册 Passkey</button>
+    <button id="loginBtn">使用 Passkey 登录</button>
+
+    <script>
+        // 将字符串转换为Uint8Array
+        function strToUint8Array(str) {
+            return Uint8Array.from(atob(str), c => c.charCodeAt(0));
+        }
+
+        // 将Uint8Array转换为Base64
+        function uint8ArrayToStr(array) {
+            return btoa(String.fromCharCode(...new Uint8Array(array)));
+        }
+
+        // 模拟生成随机的挑战（通常是从服务器获取）
+        function generateChallenge() {
+            return window.crypto.getRandomValues(new Uint8Array(32));
+        }
+
+        // 注册 Passkey
+        document.getElementById("registerBtn").addEventListener("click", async () => {
+            const challenge = generateChallenge(); // 使用随机挑战
+
+            const publicKeyOptions = {
+                challenge: challenge,
+                rp: {
+                    name: "Static Site",
+                },
+                user: {
+                    id: new Uint8Array(16), // 假设用户 ID 为静态用户
+                    name: "username",
+                    displayName: "User Display Name",
+                },
+                pubKeyCredParams: [{ alg: -7, type: "public-key" }],
+                authenticatorSelection: {
+                    authenticatorAttachment: "platform", // 使用平台认证器（设备上的passkey）
+                },
+                timeout: 60000,
+                attestation: "none", // 不需要服务器端attestation验证
+            };
+
+            try {
+                const credential = await navigator.credentials.create({
+                    publicKey: publicKeyOptions,
+                });
+
+                console.log("注册成功:", credential);
+                alert("注册 Passkey 成功！");
+
+                // 本地保存用户凭证信息（仅用于本地演示，实际应发送到服务器存储）
+                localStorage.setItem('passkeyCredential', JSON.stringify({
+                    id: uint8ArrayToStr(credential.rawId),
+                    type: credential.type,
+                    response: {
+                        clientDataJSON: uint8ArrayToStr(credential.response.clientDataJSON),
+                        attestationObject: uint8ArrayToStr(credential.response.attestationObject),
+                    }
+                }));
+            } catch (err) {
+                console.error("注册失败:", err);
+                alert("注册 Passkey 失败！");
+            }
+        });
+
+        // 使用 Passkey 登录
+        document.getElementById("loginBtn").addEventListener("click", async () => {
+            const storedCredential = JSON.parse(localStorage.getItem('passkeyCredential'));
+
+            if (!storedCredential) {
+                alert("没有找到已注册的 Passkey，请先注册！");
+                return;
+            }
+
+            const challenge = generateChallenge(); // 使用随机挑战
+
+            const publicKeyRequestOptions = {
+                challenge: challenge,
+                allowCredentials: [{
+                    id: strToUint8Array(storedCredential.id),
+                    type: "public-key"
+                }],
+                timeout: 60000,
+            };
+
+            try {
+                const assertion = await navigator.credentials.get({
+                    publicKey: publicKeyRequestOptions,
+                });
+
+                console.log("登录成功:", assertion);
+                alert("登录成功！");
+
+            } catch (err) {
+                console.error("登录失败:", err);
+                alert("使用 Passkey 登录失败！");
+            }
+        });
+    </script>
+</body>
+</html>
