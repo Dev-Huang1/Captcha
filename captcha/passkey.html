@@ -3,45 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proton Passkey Demo</title>
+    <title>Google Passkey Demo</title>
 </head>
 <body>
-    <h1>Proton Passkey Demo</h1>
-
-    <button id="registerBtn">注册 Proton Passkey</button>
-    <button id="loginBtn">使用 Proton Passkey 登录</button>
+    <h1>Google Passkey Demo</h1>
+    <button id="registerBtn">注册 Google Passkey</button>
+    <button id="loginBtn">使用 Google Passkey 登录</button>
 
     <script>
-        // 工具函数：将字符串转换为Uint8Array
-        function strToUint8Array(str) {
-            return Uint8Array.from(atob(str), c => c.charCodeAt(0));
-        }
-
-        // 工具函数：将Uint8Array转换为Base64字符串
-        function uint8ArrayToStr(array) {
-            return btoa(String.fromCharCode(...new Uint8Array(array)));
-        }
-
-        // 注册 Passkey 凭证
         async function registerPasskey() {
-            const challenge = new Uint8Array(32); // 随机挑战
+            const challenge = new Uint8Array(32); // 生成随机挑战
             window.crypto.getRandomValues(challenge);
 
             const publicKeyOptions = {
                 challenge: challenge,
                 rp: {
-                    name: "Proton Demo",
+                    name: "Your Website",
                 },
                 user: {
-                    id: new Uint8Array(16), // 静态用户ID
+                    id: new Uint8Array(16), // 假设用户 ID 为静态用户
                     name: "username",
                     displayName: "User Display Name",
                 },
                 pubKeyCredParams: [{ alg: -7, type: "public-key" }],
                 authenticatorSelection: {
                     authenticatorAttachment: "platform",  // 使用设备上的passkey
-                    residentKey: "required",  // 希望存储在用户帐户中
-                    userVerification: "preferred"  // 启用生物识别
+                    residentKey: "required",  // 表示希望存储在用户帐户上（如Google帐户）
+                    userVerification: "preferred"  // 允许使用生物识别
                 },
                 timeout: 60000,
                 attestation: "none",
@@ -53,7 +41,7 @@
                 });
 
                 console.log("注册成功:", credential);
-                alert("注册 Proton Passkey 成功！");
+                alert("注册 Google Passkey 成功！");
 
                 // 保存用户凭证信息（通常应发送到服务器）
                 localStorage.setItem('passkeyCredential', JSON.stringify({
@@ -62,11 +50,10 @@
                 }));
             } catch (err) {
                 console.error("注册失败:", err);
-                alert("注册 Proton Passkey 失败！");
+                alert("注册 Google Passkey 失败！");
             }
         }
 
-        // 使用 Passkey 凭证登录
         async function loginWithPasskey() {
             const storedCredential = JSON.parse(localStorage.getItem('passkeyCredential'));
 
@@ -75,7 +62,7 @@
                 return;
             }
 
-            const challenge = new Uint8Array(32); // 随机挑战
+            const challenge = new Uint8Array(32); // 生成随机挑战
             window.crypto.getRandomValues(challenge);
 
             const publicKeyRequestOptions = {
@@ -85,7 +72,7 @@
                     type: "public-key"
                 }],
                 timeout: 60000,
-                userVerification: "preferred"  // 启用生物识别
+                userVerification: "preferred"  // 启用生物识别或其他设备认证
             };
 
             try {
@@ -94,10 +81,10 @@
                 });
 
                 console.log("登录成功:", assertion);
-                alert("使用 Proton Passkey 登录成功！");
+                alert("使用 Google Passkey 登录成功！");
             } catch (err) {
                 console.error("登录失败:", err);
-                alert("使用 Proton Passkey 登录失败！");
+                alert("使用 Google Passkey 登录失败！");
             }
         }
 
