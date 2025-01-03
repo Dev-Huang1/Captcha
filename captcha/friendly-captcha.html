@@ -9,47 +9,12 @@
     <script src="../javascript/theme.js"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/friendly-challenge@0.9.16/widget.module.min.js" async defer></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/friendly-challenge@0.9.16/widget.min.js" async defer></script>
-    <!-- Yandex.RTB -->
-<script>window.yaContextCb=window.yaContextCb||[]</script>
-<script src="https://yandex.ru/ads/system/context.js" async></script>
 </head>
 <body>
     <h1>Friendly Captcha Demo</h1>
     <!-- Add the captcha widget -->
     <div class="frc-captcha" data-sitekey="FCMQT7KCMRL1UH3B" data-puzzle-endpoint="https://api.friendlycaptcha.com/api/v1/puzzle" data-start="auto" data-callback="CaptchaSuccess"></div>
 
-    <!-- Yandex.RTB R-A-11714884-1 -->
-<div id="yandex_rtb_R-A-11714884-1"></div>
-<script>
-window.yaContextCb.push(() => {
-    Ya.Context.AdvManager.render({
-        "blockId": "R-A-11714884-1",
-        "renderTo": "yandex_rtb_R-A-11714884-1"
-    })
-})
-</script>
-
-    <!-- Yandex.RTB R-A-11714884-2 -->
-<script>
-window.yaContextCb.push(() => {
-    Ya.Context.AdvManager.render({
-        "blockId": "R-A-11714884-2",
-        "type": "fullscreen",
-        "platform": "touch"
-    })
-})
-</script>
-
-    <!-- Yandex.RTB R-A-11714884-3 -->
-<script>
-window.yaContextCb.push(() => {
-    Ya.Context.AdvManager.render({
-        "blockId": "R-A-11714884-3",
-        "type": "floorAd",
-        "platform": "touch"
-    })
-})
-</script>
     
     <script>
     function CaptchaSuccess(solution) {
